@@ -6,7 +6,7 @@ import "./app.css";
 
 export default function App() {
   return (
-    <Router>
+    <Router root={(props) => <Suspense>{props.children}</Suspense>}>
       <FileRoutes />
     </Router>
   );

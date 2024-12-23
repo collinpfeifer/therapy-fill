@@ -1,39 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --pastel-yellow: #ffffd1;
+    --pastel-green: #d1ffcc;
+    --pastel-pink: #ffd1dc;
+}
+
 body {
-  font-family: Gordita, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    background-color: #fff;
+    color: #333;
+    font-family: "Arial", sans-serif;
 }
 
-a {
-  margin-right: 1rem;
+.bg-emoji {
+    position: relative;
+    overflow: hidden;
 }
 
-main {
-  text-align: center;
-  padding: 1em;
-  margin: 0 auto;
+.bg-emoji::before {
+    content: "🧠👥📅🕒💬";
+    position: fixed;
+    font-size: 24px;
+    line-height: 2;
+    white-space: pre-wrap;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    transform: rotate(-45deg);
+    color: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    animation: moveEmojis 60s linear infinite;
 }
 
-h1 {
-  color: #335d92;
-  text-transform: uppercase;
-  font-size: 4rem;
-  font-weight: 100;
-  line-height: 1.1;
-  margin: 4rem auto;
-  max-width: 14rem;
+@keyframes moveEmojis {
+    0% {
+        transform: translate(-25%, -25%) rotate(-45deg);
+    }
+    100% {
+        transform: translate(25%, 25%) rotate(-45deg);
+    }
 }
 
-p {
-  max-width: 14rem;
-  margin: 2rem auto;
-  line-height: 1.35;
+.gradient-text {
+    background: linear-gradient(
+        45deg,
+        var(--pastel-yellow),
+        var(--pastel-green),
+        var(--pastel-pink)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-animation 6s ease-in-out infinite;
+    background-size: 200% 200%;
 }
 
-@media (min-width: 480px) {
-  h1 {
-    max-width: none;
-  }
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 
-  p {
-    max-width: none;
-  }
+.pastel-border {
+    border: 2px solid transparent;
+    background-image: linear-gradient(white, white),
+        linear-gradient(
+            to right,
+            var(--pastel-yellow),
+            var(--pastel-green),
+            var(--pastel-pink)
+        );
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+.gradient-outline {
+    background-image: linear-gradient(#fff, #fff),
+        linear-gradient(
+            to right,
+            var(--pastel-yellow),
+            var(--pastel-green),
+            var(--pastel-pink)
+        );
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border: 4px solid transparent;
+    border-radius: 8px;
+    padding: 4px 8px;
+    display: inline-block;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: white;
+    color: #333;
+    font-weight: bold;
+    opacity: 0;
+    transition:
+        opacity 0.3s ease-in-out,
+        transform 0.3s ease-in-out;
+    transform: translateY(100%);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.toast::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        to right,
+        var(--pastel-yellow),
+        var(--pastel-green),
+        var(--pastel-pink)
+    );
+    border-radius: 7px;
+    z-index: -1;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }
