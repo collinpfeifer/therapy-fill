@@ -1,7 +1,8 @@
-import Header from "~/components/Header";
-import EmailForm from "~/components/EmailForm";
-import Footer from "~/components/Footer";
-import FeatureList from "~/components/FeatureList";
+import Header from "../components/landing-page/Header";
+import EmailForm from "../components/landing-page/EmailForm";
+import Footer from "../components/landing-page/Footer";
+import BentoGrid from "../components/landing-page/BentoGrid";
+import CallToAction from "../components/landing-page/CallToAction";
 
 export default function Home() {
   return (
@@ -9,16 +10,17 @@ export default function Home() {
       <div class="z-10 flex flex-col min-h-screen">
         <Header />
         <main class="flex-grow flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
-          <div class="max-w-2xl w-full space-y-8 text-center">
-            <h1 class="text-4xl font-bold gradient-text">
-              Never Miss a Session
-            </h1>
-            <p class="text-xl text-gray-600">
-              Maximize your schedule and income with our managed cancellation
-              list for therapists.
-            </p>
-            <EmailForm />
-            <FeatureList />
+          <div class="max-w-4xl w-full space-y-16 text-center">
+            <div>
+              <h1 class="text-4xl font-bold mb-4">Never Miss a Session</h1>
+              <p class="text-xl text-gray-600">
+                Maximize your schedule and income with our managed cancellation
+                list for therapists.
+              </p>
+              <EmailForm />
+            </div>
+            <BentoGrid />
+            <CallToAction />
           </div>
         </main>
         <Footer />

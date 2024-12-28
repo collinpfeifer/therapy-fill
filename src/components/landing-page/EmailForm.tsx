@@ -1,17 +1,19 @@
-"use client";
-
 import { createSignal } from "solid-js";
-import { addEmail } from "../api";
+import { useAction } from "@solidjs/router";
+import { addemail } from "~/api";
 
 export default function EmailForm() {
-  const [email, setEmail] = createSignal("");
-  const [message, setMessage] = createSignal("");
+  const [email, setEmail] = createSignal<string>("");
+  const [message, setMessage] = createSignal<string>("");
+  const [success, setSuccess] = createSignal<boolean>(false);
+  const addEmail = useAction(addemail);
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     const result = await addEmail(email());
     setMessage(result.message);
     if (result.success) {
+      setSuccess(true);
       setEmail("");
     }
   };
@@ -22,7 +24,7 @@ export default function EmailForm() {
         <input
           type="email"
           required
-          class="appearance-none rounded-md relative block w-full px-3 py-2 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-200 transition duration-200 ease-in-out pastel-border"
+          class="appearance-none rounded-md relative block w-full px-3 py-2 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-200 transition duration-200 ease-in-out"
           placeholder="Enter your email"
           value={email()}
           onChange={(e) => setEmail(e.target.value)}
@@ -36,7 +38,13 @@ export default function EmailForm() {
           Join the Beta!
         </button>
       </div>
-      {message && <p class="mt-2 text-sm text-green-600">{message()}</p>}
+      {message() && (
+        <p
+          class={`mt-2 text-sm ${success() ? "text-green-600" : "text-red-600"}`}
+        >
+          {message()}
+        </p>
+      )}
     </form>
   );
 }

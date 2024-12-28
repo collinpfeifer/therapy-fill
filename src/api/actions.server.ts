@@ -1,6 +1,6 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { db } from "./db";
+import { db } from "./db.server";
 import { Emails } from "../../drizzle/schema";
 
 export async function addEmail(email: string) {

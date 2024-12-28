@@ -99,42 +99,7 @@ body {
     display: inline-block;
 }
 
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background: white;
-    color: #333;
-    font-weight: bold;
-    opacity: 0;
-    transition:
-        opacity 0.3s ease-in-out,
-        transform 0.3s ease-in-out;
-    transform: translateY(100%);
-    border: 2px solid transparent;
-    background-clip: padding-box;
-}
-
-.toast::before {
-    content: "";
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(
-        to right,
-        var(--pastel-yellow),
-        var(--pastel-green),
-        var(--pastel-pink)
-    );
-    border-radius: 7px;
-    z-index: -1;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
+.text-stroke {
+    -webkit-text-stroke: 1px #4a5568;
+    text-stroke: 1px #4a5568;
 }
