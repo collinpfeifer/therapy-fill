@@ -1,45 +1,49 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { db } from "./db.server";
-import { WaitlistClients, Waitlists } from "../../drizzle/schema";
+import {
+  CancellationListClients,
+  CancellationLists,
+} from "../../drizzle/schema";
 import { z } from "zod";
 
-export async function addClientToWaitlist(formData: {
+export async function addClientToCancellationList(formData: {
   id: string;
   name: string;
   phoneNumber: string;
   email: string;
-  message: string | null;
+  textConsent: boolean;
 }) {
   const waitlistClient = z.object({
     name: z.string(),
     email: z.string().email(),
     phoneNumber: z.string(),
     message: z.string(),
+    textConsent: z.boolean(),
     id: z.string().uuid(),
   });
 
-  const { id, name, email, phoneNumber, message } =
+  const { id, name, email, phoneNumber, textConsent } =
     waitlistClient.parse(formData);
 
   return await db.transaction(async (tx) => {
-    const waitlist = await tx
+    const cancellationList = await tx
       .select()
-      .from(Waitlists)
-      .where(eq(Waitlists.id, id))
+      .from(CancellationLists)
+      .where(eq(CancellationLists.id, id))
       .get();
-    if (!waitlist) {
+    if (!cancellationList) {
       tx.rollback();
       throw new Error("Waitlist doesn't exist");
     }
     return await tx
-      .insert(WaitlistClients)
+      .insert(CancellationListClients)
       .values({
-        waitlistId: waitlist.id,
+        cancellationListId: cancellationList.id,
         name,
         email,
         phoneNumber,
-        message,
+        textConsent,
       })
       .returning()
       .get();

@@ -1,13 +1,12 @@
 import { createSignal, onMount, For } from "solid-js";
-import { Button } from "~/components/ui/button";
+import { clientOnly } from "@solidjs/start";
+
+//Components
 import { Calendar } from "~/components/ui/calendar";
-import {
-  DragDropProvider,
-  DragDropSensors,
-  useDragDropContext,
-  createDraggable,
-  createDroppable,
-} from "@thisbeyond/solid-dnd";
+import CancellationPhoneNumber from "~/components/dashboard/CancellationPhoneNumber";
+const CancellationListLink = clientOnly(
+  () => import("~/components/dashboard/CancellationListLink"),
+);
 
 type TimeSlot = {
   start: string;
@@ -17,24 +16,13 @@ type TimeSlot = {
 type Client = {
   id: string;
   name: string;
-  priority: "High" | "Medium" | "Low";
-};
-
-const Draggable = (props) => {
-  const draggable = createDraggable(props.id);
-  return <div use:draggable>draggable</div>;
-};
-
-const Droppable = (props) => {
-  const droppable = createDroppable(props.id);
-  return <div use:droppable>droppable</div>;
+  email: string;
+  phoneNumber: string;
 };
 
 export default function DashboardPage() {
-  const [isCalendarConnected, setIsCalendarConnected] = createSignal(false);
   const [availableSlots, setAvailableSlots] = createSignal<TimeSlot[]>([]);
   const [waitlistClients, setWaitlistClients] = createSignal<Client[]>([]);
-  const [, { onDragEnd }] = useDragDropContext();
 
   onMount(() => {
     // Simulate fetching available slots
@@ -49,28 +37,38 @@ export default function DashboardPage() {
 
     // Simulate fetching waitlist clients
     const clients: Client[] = [
-      { id: "1", name: "Alice Johnson", priority: "High" },
-      { id: "2", name: "Bob Smith", priority: "Medium" },
-      { id: "3", name: "Carol Williams", priority: "Low" },
-      { id: "4", name: "David Brown", priority: "High" },
-      { id: "5", name: "Eva Davis", priority: "Medium" },
+      {
+        id: "1",
+        name: "John Doe",
+        email: "john.doe@example.com",
+        phoneNumber: "123-456-7890",
+      },
+      {
+        id: "2",
+        name: "Jane Smith",
+        email: "jane.smith@example.com",
+        phoneNumber: "987-654-3210",
+      },
+      {
+        id: "3",
+        name: "Alice Johnson",
+        email: "alice.johnson@example.com",
+        phoneNumber: "555-123-4567",
+      },
+      {
+        id: "4",
+        name: "Bob Brown",
+        email: "bob.brown@example.com",
+        phoneNumber: "555-987-6543",
+      },
+      {
+        id: "5",
+        name: "Charlie Davis",
+        email: "charlie.davis@example.com",
+        phoneNumber: "555-321-7654",
+      },
     ];
     setWaitlistClients(clients);
-  });
-
-  const handleCalendarConnect = () => {
-    // Simulate connecting to Google Calendar
-    setIsCalendarConnected(true);
-  };
-
-  onDragEnd(({ draggable, droppable }) => {
-    if (!droppable) return;
-
-    const newClients = [...waitlistClients()];
-    const [reorderedItem] = newClients.splice(draggable.index, 1);
-    newClients.splice(droppable.index, 0, reorderedItem);
-
-    setWaitlistClients(newClients);
   });
 
   return (
@@ -79,24 +77,9 @@ export default function DashboardPage() {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="bg-white p-6 rounded-lg shadow-md">
-          <h2 class="text-2xl font-semibold mb-4 text-gray-700">
-            Calendar Connection
-          </h2>
-          {isCalendarConnected() ? (
-            <p class="text-green-600">Your Google Calendar is connected!</p>
-          ) : (
-            <Button
-              onClick={handleCalendarConnect}
-              class="bg-gradient-to-r from-yellow-200 via-green-200 to-pink-200 text-gray-800 hover:from-yellow-300 hover:via-green-300 hover:to-pink-300"
-            >
-              Connect Google Calendar
-            </Button>
-          )}
+          <h2 class="text-2xl font-semibold mb-4 text-gray-700">Calendar</h2>
           <div class="mt-4">
-            <Calendar
-            // mode="single"
-            // class="rounded-md border"
-            />
+            <Calendar />
           </div>
         </div>
 
@@ -117,57 +100,23 @@ export default function DashboardPage() {
 
         <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
           <h2 class="text-2xl font-semibold mb-4 text-gray-700">
-            Waitlist Clients
+            Cancellation List Clients
           </h2>
-          <DragDropProvider>
-            <DragDropSensors>
-              {/* <DragDropContext onDragEnd={onDragEnd}> */}
-              <Droppable id="waitlist">
-                {(dropProps) => (
-                  <ul
-                    ref={dropProps.ref}
-                    {...dropProps.droppableProps}
-                    class="space-y-2"
-                  >
-                    <For each={waitlistClients()}>
-                      {(client, index) => (
-                        <Draggable id={client.id} index={index}>
-                          {(dragProps) => (
-                            <li
-                              ref={dragProps.ref}
-                              {...dragProps.draggableProps}
-                              {...dragProps.dragHandleProps}
-                              class={`p-3 rounded-lg shadow-sm ${
-                                index() < 3 ? "bg-yellow-100" : "bg-gray-100"
-                              }`}
-                            >
-                              <div class="flex justify-between items-center">
-                                <span>{client.name}</span>
-                                <span
-                                  class={`px-2 py-1 rounded text-xs ${
-                                    client.priority === "High"
-                                      ? "bg-red-200 text-red-800"
-                                      : client.priority === "Medium"
-                                        ? "bg-yellow-200 text-yellow-800"
-                                        : "bg-green-200 text-green-800"
-                                  }`}
-                                >
-                                  {client.priority}
-                                </span>
-                              </div>
-                            </li>
-                          )}
-                        </Draggable>
-                      )}
-                    </For>
-                  </ul>
-                )}
-              </Droppable>
-              {/* </DragDropContext> */}
-            </DragDropSensors>
-          </DragDropProvider>
+          <For each={waitlistClients()}>
+            {(client) => (
+              <div class="p-3 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                  <span>{client.name}</span>
+                  <span>{client.email}</span>
+                  <span>{client.phoneNumber}</span>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
       </div>
+      <CancellationListLink />
+      <CancellationPhoneNumber />
     </div>
   );
 }

@@ -1,7 +1,5 @@
 import { defineConfig } from "@solidjs/start/config";
-
-const __dirname = import.meta.dir;
-const resolve = import.meta.resolve;
+import path from "path";
 
 export default defineConfig({
   server: {
@@ -10,9 +8,11 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "~": resolve(__dirname, "./src"),
+        "~": path.resolve(__dirname, "./src"),
       },
     },
-    ssr: { external: ["drizzle-orm"], noExternal: ["bun:sqlite"] },
+    ssr: {
+      external: ["drizzle-orm", "bun:sqlite", "bun"],
+    },
   },
 });

@@ -1,8 +1,6 @@
 import Header from "../components/landing-page/Header";
-import EmailForm from "../components/landing-page/EmailForm";
 import Footer from "../components/landing-page/Footer";
 import BentoGrid from "../components/landing-page/BentoGrid";
-import CallToAction from "../components/landing-page/CallToAction";
 
 export default function Home() {
   return (
@@ -17,10 +15,8 @@ export default function Home() {
                 Maximize your schedule and income with our managed cancellation
                 list for therapists.
               </p>
-              <EmailForm />
             </div>
             <BentoGrid />
-            <CallToAction />
           </div>
         </main>
         <Footer />

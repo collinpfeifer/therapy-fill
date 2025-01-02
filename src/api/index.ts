@@ -1,15 +1,17 @@
 import { action } from "@solidjs/router";
-import { signInOrSignUp, getUser, logout as l } from "./user.server";
-import { addClientToWaitlist } from "./waitlist.server";
+import { signIn, signUp, getUser, logout as l } from "./user.server";
+import { addClientToCancellationList } from "./cancellationList.server";
 
-// Sign Up or Sign In
-export const signinorsignup = action(signInOrSignUp, "signInOrSignUp");
+// Sign In
+export const signin = action(signIn, "signIn");
+// Sign Up
+export const signup = action(signUp, "signUp");
 // Logout
 export const logout = action(l, "logout");
 //Get User
 export const getuser = action(getUser, "getUser");
 // Add Client to Waitlist
-export const addclienttowaitlist = action(
-  addClientToWaitlist,
-  "addClientToWaitlist",
+export const addclienttocancellationlist = action(
+  addClientToCancellationList,
+  "addClientToCancellationList",
 );

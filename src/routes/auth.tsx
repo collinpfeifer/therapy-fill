@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 import { useSearchParams } from "@solidjs/router";
-import { signinorsignup } from "~/api";
+import { signin, signup } from "~/api";
 
 // Components
 import { Button } from "~/components/ui/button";
@@ -10,6 +10,12 @@ import {
   TextFieldRoot,
 } from "~/components/ui/textfield";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import {
+  Checkbox,
+  CheckboxControl,
+  CheckboxDescription,
+  CheckboxLabel,
+} from "~/components/ui/checkbox";
 
 export default function AuthPage() {
   const [email, setEmail] = createSignal("");
@@ -29,12 +35,12 @@ export default function AuthPage() {
       <div class="w-full max-w-md">
         <Tabs value={activeTab()} onChange={setActiveTab} class="w-full">
           <TabsList class="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            <TabsTrigger value="sign-in">Login</TabsTrigger>
+            <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="sign-in">
             <form
-              action={signinorsignup}
+              action={signin}
               method="post"
               class="space-y-4 bg-white p-8 rounded-lg shadow-md"
             >
@@ -42,10 +48,13 @@ export default function AuthPage() {
                 <TextFieldLabel for="email">Email</TextFieldLabel>
                 <TextField
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email()}
-                  onInput={(e) => setEmail(e.target.value)}
+                  onInput={(e) =>
+                    setEmail((e.target as HTMLInputElement).value)
+                  }
                   required
                 />
               </TextFieldRoot>
@@ -53,10 +62,13 @@ export default function AuthPage() {
                 <TextFieldLabel for="password">Password</TextFieldLabel>
                 <TextField
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="Enter your password"
                   value={password()}
-                  onInput={(e) => setPassword(e.target.value)}
+                  onInput={(e) =>
+                    setPassword((e.target as HTMLInputElement).value)
+                  }
                   required
                 />
               </TextFieldRoot>
@@ -70,32 +82,52 @@ export default function AuthPage() {
           </TabsContent>
           <TabsContent value="sign-up">
             <form
-              action={signinorsignup}
+              action={signup}
               method="post"
               class="space-y-4 bg-white p-8 rounded-lg shadow-md"
             >
               <TextFieldRoot class="space-y-2">
-                <TextFieldLabel for="signup-email">Email</TextFieldLabel>
+                <TextFieldLabel for="email">Email</TextFieldLabel>
                 <TextField
-                  id="signup-email"
+                  id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your email"
                   value={email()}
-                  onInput={(e) => setEmail(e.target.value)}
+                  onInput={(e) =>
+                    setEmail((e.target as HTMLInputElement).value)
+                  }
                   required
                 />
               </TextFieldRoot>
               <TextFieldRoot class="space-y-2">
-                <TextFieldLabel for="signup-password">Password</TextFieldLabel>
+                <TextFieldLabel for="password">Password</TextFieldLabel>
                 <TextField
-                  id="signup-password"
+                  id="password"
+                  name="password"
                   type="password"
                   placeholder="Create a password"
                   value={password()}
-                  onInput={(e) => setPassword(e.target.value)}
+                  onInput={(e) =>
+                    setPassword((e.target as HTMLInputElement).value)
+                  }
                   required
                 />
               </TextFieldRoot>
+              <Checkbox class="flex items-start space-x-2">
+                <CheckboxControl />
+                <div class="grid gap-1.5 leading-none">
+                  <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Accept terms and conditions
+                  </CheckboxLabel>
+                  <CheckboxDescription class="text-sm text-muted-foreground">
+                    By providing your contact information, you agree to receive
+                    texts and emails from TherapyFill. We will use this to reach
+                    out about available appointments. Reply STOP to unsubscribe.
+                    Message and data rates may apply.
+                  </CheckboxDescription>
+                </div>
+              </Checkbox>
               <Button
                 type="submit"
                 class="w-full bg-gradient-to-r from-yellow-200 via-green-200 to-pink-200 text-gray-800 hover:from-yellow-300 hover:via-green-300 hover:to-pink-300"
