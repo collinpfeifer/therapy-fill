@@ -1,5 +1,9 @@
-import { drizzle, BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
-import { Database } from "bun:sqlite";
+import { drizzle, LibSQLDatabase } from "drizzle-orm/libsql";
 
-const sqlite = new Database(process.env.DB_FILE_NAME!);
-export const db: BunSQLiteDatabase = drizzle(sqlite);
+export const db: LibSQLDatabase = drizzle({
+  logger: true,
+  connection: {
+    url: "file:" + process.env.DATABASE_URL!,
+    encryptionKey: process.env.DATABASE_ENCRYPTION_KEY!,
+  },
+});

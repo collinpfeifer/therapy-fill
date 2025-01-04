@@ -1,10 +1,7 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { db } from "./db.server";
-import {
-  CancellationListClients,
-  CancellationLists,
-} from "../../drizzle/schema";
+import { Clients, CancellationLists } from "../../drizzle/schema";
 import { z } from "zod";
 
 export async function addClientToCancellationList(formData: {
@@ -19,7 +16,7 @@ export async function addClientToCancellationList(formData: {
     email: z.string().email(),
     phoneNumber: z.string(),
     message: z.string(),
-    textConsent: z.boolean(),
+    textConsent: z.enum(["on", "off"]),
     id: z.string().uuid(),
   });
 
@@ -37,13 +34,13 @@ export async function addClientToCancellationList(formData: {
       throw new Error("Waitlist doesn't exist");
     }
     return await tx
-      .insert(CancellationListClients)
+      .insert(Clients)
       .values({
         cancellationListId: cancellationList.id,
         name,
         email,
         phoneNumber,
-        textConsent,
+        textConsent: textConsent === "on",
       })
       .returning()
       .get();

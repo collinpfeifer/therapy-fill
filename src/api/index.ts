@@ -1,5 +1,5 @@
 import { action } from "@solidjs/router";
-import { signIn, signUp, getUser, logout as l } from "./user.server";
+import { signIn, signUp, getUser, logout as l } from "./therapist.server";
 import { addClientToCancellationList } from "./cancellationList.server";
 
 // Sign In

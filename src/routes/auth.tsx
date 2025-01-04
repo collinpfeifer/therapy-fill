@@ -20,6 +20,8 @@ import {
 export default function AuthPage() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
+  const [name, setName] = createSignal("");
+  const [textConsent, setTextConsent] = createSignal(false);
   const [activeTab, setActiveTab] = createSignal("sign-in");
   const [searchParams] = useSearchParams();
 
@@ -87,6 +89,18 @@ export default function AuthPage() {
               class="space-y-4 bg-white p-8 rounded-lg shadow-md"
             >
               <TextFieldRoot class="space-y-2">
+                <TextFieldLabel for="name">Name</TextFieldLabel>
+                <TextField
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter your name, this is how we'll identify you if a client cancels"
+                  value={name()}
+                  onInput={(e) => setName((e.target as HTMLInputElement).value)}
+                  required
+                />
+              </TextFieldRoot>
+              <TextFieldRoot class="space-y-2">
                 <TextFieldLabel for="email">Email</TextFieldLabel>
                 <TextField
                   id="email"
@@ -114,7 +128,13 @@ export default function AuthPage() {
                   required
                 />
               </TextFieldRoot>
-              <Checkbox class="flex items-start space-x-2">
+              <Checkbox
+                id="textConsent"
+                name="textConsent"
+                class="flex items-start space-x-2"
+                checked={textConsent()}
+                onChange={(checked) => setTextConsent(checked)}
+              >
                 <CheckboxControl />
                 <div class="grid gap-1.5 leading-none">
                   <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
