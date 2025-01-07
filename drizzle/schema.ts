@@ -1,13 +1,14 @@
 import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 // import { randomUUIDv7 } from "bun"; // doesnt work sad :(
 import { v4 as uuidv4 } from "uuid";
+
+export type Therapist = InferSelectModel<typeof Therapists>;
 
 export const Therapists = sqliteTable("therapists", {
   id: text("id")
     .$defaultFn(() => uuidv4())
-    .primaryKey()
-    .notNull(),
+    .primaryKey(),
   cancellationListId: text("cancellationListId")
     .unique()
     .references(() => CancellationLists.id),
@@ -20,15 +21,13 @@ export const Therapists = sqliteTable("therapists", {
 export const CancellationLists = sqliteTable("cancellationLists", {
   id: text("id")
     .$defaultFn(() => uuidv4())
-    .primaryKey()
-    .notNull(),
+    .primaryKey(),
 });
 
 export const Clients = sqliteTable("clients", {
   id: text("id")
     .$defaultFn(() => uuidv4())
-    .primaryKey()
-    .notNull(),
+    .primaryKey(),
   cancellationListId: text("cancellationListId").references(
     () => CancellationLists.id,
   ),
@@ -41,11 +40,9 @@ export const Clients = sqliteTable("clients", {
 export const Appointments = sqliteTable("appointments", {
   id: text("id")
     .$defaultFn(() => uuidv4())
-    .primaryKey()
-    .notNull(),
+    .primaryKey(),
   clientId: text("clientId").references(() => Clients.id),
-  date: text("date").notNull(),
-  time: text("time").notNull(),
+  dateTime: text("dateTime").notNull(),
   from: text("from").notNull(),
   therapistId: text("therapistId").references(() => Therapists.id),
 });

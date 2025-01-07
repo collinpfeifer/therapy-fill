@@ -2,26 +2,30 @@
 import { redirect } from "@solidjs/router";
 import { useSession } from "vinxi/http";
 import { eq } from "drizzle-orm";
-import { db } from "./db.server";
+import { db } from "../lib/db";
 import { Therapists, CancellationLists } from "../../drizzle/schema";
 import { z } from "zod";
 import bun from "bun";
-import { sendEmail } from "./resend.server";
+import { sendEmail } from "../lib/resend";
 
 export async function signIn(formData: FormData) {
   const inputData = Object.fromEntries(formData);
-
+  console.log(inputData);
   const signInInput = z.object({
     email: z.string().email().min(3),
     password: z.string().min(6),
   });
 
   const { email, password } = signInInput.parse(inputData);
+  console.log({ email, password });
+
   const user = await db
     .select()
     .from(Therapists)
     .where(eq(Therapists.email, email))
     .get();
+
+  console.log(user);
 
   if (!user || !(await bun.password.verify(password, user.password)))
     throw new Error("Invalid sign-in");
@@ -53,11 +57,7 @@ export async function signUp(formData: FormData) {
   const existingUser = await db
     .select()
     .from(Therapists)
-    .where(eq(Therapists.email, email))
-    .catch((err) => {
-      console.error("Error checking for existing user:", err);
-      throw err; // Rethrow the error after logging it
-    });
+    .where(eq(Therapists.email, email));
 
   console.log("Existing user", existingUser);
   if (existingUser) throw new Error("User already exists");

@@ -1,6 +1,6 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { db } from "./db.server";
+import { db } from "../lib/db";
 import { Clients, CancellationLists } from "../../drizzle/schema";
 import { z } from "zod";
 

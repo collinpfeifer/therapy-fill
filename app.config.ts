@@ -2,6 +2,9 @@ import { defineConfig } from "@solidjs/start/config";
 import path from "path";
 
 export default defineConfig({
+  server: {
+    preset: "bun",
+  },
   vite: {
     resolve: {
       alias: {
@@ -10,6 +13,7 @@ export default defineConfig({
     },
     ssr: {
       external: ["drizzle-orm", "bun:sqlite", "bun"],
+      noExternal: ["**/*.server.ts"],
     },
   },
 });

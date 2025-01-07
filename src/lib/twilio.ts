@@ -1,4 +1,3 @@
-"use server";
 import twilio from "twilio";
 
 const client = twilio(

@@ -51,7 +51,7 @@ export default function AuthPage() {
                 <TextField
                   id="email"
                   name="email"
-                  type="email"
+                  // type="email"
                   placeholder="Enter your email"
                   value={email()}
                   onInput={(e) =>
