@@ -31,6 +31,7 @@ export const Clients = sqliteTable("clients", {
   cancellationListId: text("cancellationListId").references(
     () => CancellationLists.id,
   ),
+  therapistId: text("therapistId").references(() => Therapists.id),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phoneNumber: text("phoneNumber").notNull().unique(),
@@ -52,6 +53,7 @@ export const therapistsRelations = relations(Therapists, ({ one, many }) => ({
     fields: [Therapists.cancellationListId],
     references: [CancellationLists.id],
   }),
+  clients: many(Clients),
   appointments: many(Appointments),
 }));
 
@@ -70,6 +72,10 @@ export const clientRelations = relations(Clients, ({ one, many }) => ({
   cancellationList: one(CancellationLists, {
     fields: [Clients.cancellationListId],
     references: [CancellationLists.id],
+  }),
+  therapist: one(Therapists, {
+    fields: [Clients.therapistId],
+    references: [Therapists.id],
   }),
   appointments: many(Appointments),
 }));

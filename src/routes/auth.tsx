@@ -6,6 +6,7 @@ import { signin, signup } from "~/api";
 import { Button } from "~/components/ui/button";
 import {
   TextField,
+  TextFieldDescription,
   TextFieldLabel,
   TextFieldRoot,
 } from "~/components/ui/textfield";
@@ -94,11 +95,14 @@ export default function AuthPage() {
                   id="name"
                   name="name"
                   type="text"
-                  placeholder="Enter your name, this is how we'll identify you if a client cancels"
+                  placeholder="Enter your name"
                   value={name()}
                   onInput={(e) => setName((e.target as HTMLInputElement).value)}
                   required
                 />
+                <TextFieldDescription>
+                  This is how we'll identify you if a client cancels
+                </TextFieldDescription>
               </TextFieldRoot>
               <TextFieldRoot class="space-y-2">
                 <TextFieldLabel for="email">Email</TextFieldLabel>

@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "@solidjs/router";
-import { useSession } from "vinxi/http";
 import { eq } from "drizzle-orm";
+import { getSession } from "../lib/session";
 import { db } from "../lib/db";
 import { Therapists, CancellationLists } from "../../drizzle/schema";
 import { z } from "zod";
@@ -10,14 +10,12 @@ import { sendEmail } from "../lib/resend";
 
 export async function signIn(formData: FormData) {
   const inputData = Object.fromEntries(formData);
-  console.log(inputData);
   const signInInput = z.object({
     email: z.string().email().min(3),
     password: z.string().min(6),
   });
 
   const { email, password } = signInInput.parse(inputData);
-  console.log({ email, password });
 
   const user = await db
     .select()
@@ -57,7 +55,8 @@ export async function signUp(formData: FormData) {
   const existingUser = await db
     .select()
     .from(Therapists)
-    .where(eq(Therapists.email, email));
+    .where(eq(Therapists.email, email))
+    .get();
 
   console.log("Existing user", existingUser);
   if (existingUser) throw new Error("User already exists");
@@ -84,8 +83,6 @@ export async function signUp(formData: FormData) {
       .returning()
       .get();
   });
-
-  console.log(newUser);
 
   const session = await getSession();
   await session.update((d) => {
@@ -114,12 +111,6 @@ export async function signUp(formData: FormData) {
   // });
 
   return redirect("/dashboard");
-}
-
-function getSession() {
-  return useSession({
-    password: process.env.SESSION_SECRET!,
-  });
 }
 
 export async function logout() {

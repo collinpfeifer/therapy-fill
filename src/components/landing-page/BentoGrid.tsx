@@ -17,7 +17,7 @@ const features = [
   {
     title: "Smart Scheduling",
     description:
-      "Our AI-powered system automatically detects cancellations and suggests perfect replacements from your waitlist. Therapists always have the final say in adding new clients, ensuring full control over their schedule.",
+      "Our AI-powered receptionist automatically detects cancellations and suggests perfect replacements from your waitlist. Therapists always have the final say in adding new clients, ensuring full control over their schedule.",
     icon: Calendar,
     color: "bg-yellow-200",
     animation: CalendarAnimation,
@@ -38,14 +38,14 @@ const features = [
     color: "bg-pink-200",
     animation: RevenueAnimation,
   },
-  {
-    title: "Client Management",
-    description:
-      "Easily manage your waitlist and prioritize clients based on urgency or preference. Get a daily review to see the top 3 potential clients for that day and be able to prepare your practice.",
-    icon: Users,
-    color: "bg-purple-200",
-    animation: ClientListAnimation,
-  },
+  // {
+  //   title: "Client Management",
+  //   description:
+  //     "Easily manage your waitlist and prioritize clients based on urgency or preference. Get a daily review to see the top 3 potential clients for that day and be able to prepare your practice.",
+  //   icon: Users,
+  //   color: "bg-purple-200",
+  //   animation: ClientListAnimation,
+  // },
   {
     title: "Self-Service Waitlist",
     description:

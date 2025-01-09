@@ -121,7 +121,7 @@ const FormAnimation = () => {
             ref={nameRef}
             type="text"
             id="name"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50 bg-white"
             readOnly
           />
         </div>
@@ -133,7 +133,7 @@ const FormAnimation = () => {
             ref={phoneRef}
             type="tel"
             id="phone"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50 bg-white"
             readOnly
           />
         </div>
@@ -145,7 +145,7 @@ const FormAnimation = () => {
             ref={emailRef}
             type="email"
             id="email"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50 bg-white"
             readOnly
           />
         </div>
@@ -157,7 +157,7 @@ const FormAnimation = () => {
             ref={messageRef}
             id="message"
             rows={1}
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50 resize-none"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50 resize-none bg-white"
             readOnly
           ></textarea>
         </div>
