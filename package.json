@@ -25,6 +25,7 @@
     "drizzle-orm": "^0.38.3",
     "googleapis": "^144.0.0",
     "lucide-solid": "^0.469.0",
+    "nanoid": "^5.0.9",
     "ollama": "^0.5.11",
     "postcss": "^8.4.49",
     "posthog-js": "^1.205.0",

@@ -41,12 +41,10 @@ export default function WaitlistForm() {
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    console.log(
-      await addClientToCancellationList({
-        ...formData,
-        textConsent: formData.textConsent === "on",
-      }),
-    );
+    await addClientToCancellationList({
+      ...formData,
+      textConsent: formData.textConsent === "on",
+    });
     toaster.show((props) => (
       <Toast toastId={props.toastId}>
         <ToastContent>

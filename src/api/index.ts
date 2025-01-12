@@ -1,7 +1,11 @@
 import { action, query } from "@solidjs/router";
 import { signIn, signUp, getUser, logout as l } from "./therapist.server";
 import { addClientToCancellationList } from "./cancellationList.server";
-import { getAppointments } from "./appointment.server";
+import {
+  getAppointments,
+  getAppointmentByNotificationId,
+  bookAppointment,
+} from "./appointment.server";
 import { getClients } from "./client.server";
 
 // Sign In
@@ -17,7 +21,14 @@ export const addclienttocancellationlist = action(
   addClientToCancellationList,
   "addClientToCancellationList",
 );
-// Get Appointments
+// Get appointments
 export const getappointments = query(getAppointments, "getAppointments");
+// Get Appointment by Notification ID
+export const getappointmentbynotificationid = query(
+  getAppointmentByNotificationId,
+  "getAppointmentByNotificationId",
+);
 // Get Clients
 export const getclients = query(getClients, "getClients");
+// Book Appointment
+export const bookappointment = action(bookAppointment, "bookAppointment");

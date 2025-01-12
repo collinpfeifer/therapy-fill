@@ -18,11 +18,15 @@ export const Therapists = sqliteTable("therapists", {
   textConsent: integer({ mode: "boolean" }).default(false),
 });
 
+export type CancellationList = InferSelectModel<typeof CancellationLists>;
+
 export const CancellationLists = sqliteTable("cancellationLists", {
   id: text("id")
     .$defaultFn(() => uuidv4())
     .primaryKey(),
 });
+
+export type Client = InferSelectModel<typeof Clients>;
 
 export const Clients = sqliteTable("clients", {
   id: text("id")
@@ -38,6 +42,9 @@ export const Clients = sqliteTable("clients", {
   textConsent: integer({ mode: "boolean" }).default(false),
 });
 
+export type Appointment = InferSelectModel<typeof Appointments>;
+export type AppointmentStatus = "available" | "booked" | "cancelled";
+
 export const Appointments = sqliteTable("appointments", {
   id: text("id")
     .$defaultFn(() => uuidv4())
@@ -45,7 +52,23 @@ export const Appointments = sqliteTable("appointments", {
   clientId: text("clientId").references(() => Clients.id),
   dateTime: text("dateTime").notNull(),
   from: text("from").notNull(),
+  status: text("status").notNull(),
   therapistId: text("therapistId").references(() => Therapists.id),
+  therapistName: text("therapistName").notNull(),
+});
+
+export type Notification = InferSelectModel<typeof Notifications>;
+export type NotificationStatus = "sent" | "responded";
+
+export const Notifications = sqliteTable("notifications", {
+  id: text("id").primaryKey(),
+  appointmentId: text("appointmentId")
+    .references(() => Appointments.id)
+    .notNull(),
+  clientId: text("clientId").references(() => Clients.id),
+  phoneNumber: text("phoneNumber").notNull(),
+  status: text("status").notNull(),
+  bookingLink: text("bookingLink").notNull(),
 });
 
 export const therapistsRelations = relations(Therapists, ({ one, many }) => ({

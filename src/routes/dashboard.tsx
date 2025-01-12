@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 //Components
 import { Calendar } from "~/components/ui/calendar";
 import CancellationPhoneNumber from "~/components/dashboard/CancellationPhoneNumber";
+import { formatAppointmentTime } from "~/lib/date";
 const CancellationListLink = clientOnly(
   () => import("~/components/dashboard/CancellationListLink"),
 );
@@ -40,27 +41,16 @@ export default function DashboardPage() {
           </h2>
           <ul class="space-y-2">
             <For each={appointments()}>
-              {(appointment) => {
-                const dateTime = dayjs(appointment.dateTime);
-                // Get the full date (e.g., "January 9, 2025")
-                const date = dateTime.format("MMMM D, YYYY");
-
-                // Get the time (e.g., "10:30 AM")
-                const time = dateTime.format("h:mm A");
-
-                // Get the time one hour later (e.g., "11:30 AM")
-                const oneHourLater = dateTime.add(1, "hour").format("h:mm A");
-                return (
-                  <li class="bg-gray-100 p-2 rounded">
-                    {date} - {time} - {oneHourLater}
-                  </li>
-                );
-              }}
+              {(appointment) => (
+                <li class="bg-gray-100 p-2 rounded">
+                  {formatAppointmentTime(appointment.dateTime)}
+                </li>
+              )}
             </For>
           </ul>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
+        <div class="g-white p-6 rounded-lg shadow-md md:col-span-2">
           <h2 class="text-2xl font-semibold mb-4 text-gray-700">
             Cancellation List Clients
           </h2>

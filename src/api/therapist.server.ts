@@ -93,7 +93,7 @@ export async function signUp(formData: FormData) {
   //   to: email,
   //   subject: "Welcome to Therapy Fill! 🥳 🎉",
   //   name: "Collin @ TherapyFill :)",
-  //   from: "collin@therapyfill.com",
+  //   from: "cpfeifer@madcactus.org",
   //   message: `Hi! Welcome to TherapyFill!
 
   //   I'm Collin, founder of TherapyFill and I'm so glad you're here!
