@@ -9,13 +9,12 @@ export async function addClientToCancellationList(formData: {
   name: string;
   phoneNumber: string;
   email: string;
-  textConsent: boolean;
+  textConsent: string;
 }) {
   const waitlistClient = z.object({
     name: z.string(),
     email: z.string().email(),
     phoneNumber: z.string(),
-    message: z.string(),
     textConsent: z.enum(["on", "off"]),
     id: z.string().uuid(),
   });
@@ -31,18 +30,21 @@ export async function addClientToCancellationList(formData: {
       .get();
     if (!cancellationList) {
       tx.rollback();
-      throw new Error("Waitlist doesn't exist");
+      return { success: false, result: new Error("Waitlist doesn't exist") };
     }
-    return await tx
-      .insert(Clients)
-      .values({
-        cancellationListId: cancellationList.id,
-        name,
-        email,
-        phoneNumber,
-        textConsent: textConsent === "on",
-      })
-      .returning()
-      .get();
+    return {
+      success: true,
+      result: await tx
+        .insert(Clients)
+        .values({
+          cancellationListId: cancellationList.id,
+          name,
+          email,
+          phoneNumber,
+          textConsent: textConsent === "on",
+        })
+        .returning()
+        .get(),
+    };
   });
 }

@@ -4,23 +4,26 @@ import {
   Calendar,
   MessageCircle,
   DollarSign,
-  Users,
+  // Users,
+  PiggyBank,
   FormInput,
 } from "lucide-solid";
 import CalendarAnimation from "./CalendarAnimation";
-import ClientListAnimation from "./ClientListAnimation";
+// import ClientListAnimation from "./ClientListAnimation";
 import TextMessageAnimation from "./TextMessageAnimation";
+import ClientCancellationAnimation from "./ClientCancellationAnimation";
 const RevenueAnimation = clientOnly(() => import("./RevenueAnimation"));
+const PricingAnimation = clientOnly(() => import("./PricingAnimation"));
 import FormAnimation from "./FormAnimation";
 
 const features = [
   {
-    title: "Smart Scheduling",
+    title: "AI Receptionist",
     description:
-      "Our AI-powered receptionist automatically detects cancellations and suggests perfect replacements from your waitlist. Therapists always have the final say in adding new clients, ensuring full control over their schedule.",
+      "Our AI-powered receptionist handles cancellation requests 24/7, saving you from interruptions during sessions. It proactively reschedules clients, increasing retention and reducing burnout.",
     icon: Calendar,
     color: "bg-yellow-200",
-    animation: CalendarAnimation,
+    animation: ClientCancellationAnimation,
   },
   {
     title: "Automated Outreach",
@@ -53,6 +56,14 @@ const features = [
     icon: FormInput,
     color: "bg-orange-200",
     animation: FormAnimation,
+  },
+  {
+    title: "Simple Pricing",
+    description:
+      "Our pricing is straightforward and aligned with your success. You only pay $5 for every cancellation spot that we successfully fill. No monthly fees, no hidden costs - just pay for the value you receive.",
+    icon: PiggyBank,
+    color: "bg-purple-200",
+    animation: PricingAnimation,
   },
 ];
 

@@ -1,9 +1,12 @@
 import { Phone } from "lucide-solid";
 import { createSignal } from "solid-js";
 import { Button } from "~/components/ui/button";
+import { formatPhoneNumber } from "~/lib/phoneNumber";
 
 const CancellationPhoneNumber = () => {
-  const [phoneNumber, setPhoneNumber] = createSignal("(917) 512-3613");
+  const [phoneNumber, setPhoneNumber] = createSignal(
+    formatPhoneNumber(process.env.VITE_TWILIO_PHONE_NUMBER!),
+  );
   return (
     <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2 mt-6">
       <h2 class="text-2xl font-semibold mb-4 text-gray-700">

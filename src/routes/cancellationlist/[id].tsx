@@ -41,21 +41,39 @@ export default function WaitlistForm() {
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    await addClientToCancellationList({
-      ...formData,
-      textConsent: formData.textConsent === "on",
+    const response = await addClientToCancellationList({
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      textConsent: formData.textConsent,
     });
-    toaster.show((props) => (
-      <Toast toastId={props.toastId}>
-        <ToastContent>
-          <ToastTitle>Submission Successful</ToastTitle>
-          <ToastDescription>
-            You've been added to the cancellation list. We'll contact you soon.
-          </ToastDescription>
-        </ToastContent>
-        <ToastProgress />
-      </Toast>
-    ));
+    if (response.success) {
+      toaster.show((props) => (
+        <Toast toastId={props.toastId} class="bg-green-100 text-green-800">
+          <ToastContent>
+            <ToastTitle>Submission Successful</ToastTitle>
+            <ToastDescription>
+              You've been added to the cancellation list. We'll contact you
+              soon.
+            </ToastDescription>
+          </ToastContent>
+          <ToastProgress />
+        </Toast>
+      ));
+    } else {
+      toaster.show((props) => (
+        <Toast toastId={props.toastId} class="bg-red-100 text-red-800">
+          <ToastContent>
+            <ToastTitle>Submission Failed</ToastTitle>
+            <ToastDescription>
+              There was an error submitting your information. Please try again.
+            </ToastDescription>
+          </ToastContent>
+          <ToastProgress />
+        </Toast>
+      ));
+    }
     setFormData({
       name: "",
       email: "",

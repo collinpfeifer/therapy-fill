@@ -30,18 +30,33 @@ export default function BookingForm() {
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    await bookAppointment({ notificationId: params.id });
-    toaster.show((props) => (
-      <Toast toastId={props.toastId}>
-        <ToastContent>
-          <ToastTitle>Successfully Booked!</ToastTitle>
-          <ToastDescription>
-            You've booked this appointment. We'll see you soon!
-          </ToastDescription>
-        </ToastContent>
-        <ToastProgress />
-      </Toast>
-    ));
+    const response = await bookAppointment({ notificationId: params.id });
+    if (response.success) {
+      toaster.show((props) => (
+        <Toast toastId={props.toastId}>
+          <ToastContent>
+            <ToastTitle>Successfully Booked!</ToastTitle>
+            <ToastDescription>
+              You've booked this appointment. We'll see you soon!
+            </ToastDescription>
+          </ToastContent>
+          <ToastProgress />
+        </Toast>
+      ));
+    } else {
+      toaster.show((props) => (
+        <Toast toastId={props.toastId}>
+          <ToastContent>
+            <ToastTitle>Booking Failed</ToastTitle>
+            <ToastDescription>
+              We're sorry, but we couldn't book this appointment. Please try
+              again later.
+            </ToastDescription>
+          </ToastContent>
+          <ToastProgress />
+        </Toast>
+      ));
+    }
   };
 
   return (

@@ -54,20 +54,26 @@ export async function bookAppointment(formData: { notificationId: string }) {
 
     if (!appointment) {
       tx.rollback();
-      throw new Error("Appointment doesn't exist");
+      return { success: false, result: new Error("Appointment doesn't exist") };
     } else if (appointment.status === "booked") {
       tx.rollback();
-      throw new Error("Appointment already booked");
+      return {
+        success: false,
+        result: new Error("Appointment already booked"),
+      };
     }
 
-    return await tx
-      .update(Appointments)
-      .set({
-        status: "booked",
-        clientId,
-      })
-      .where(eq(Appointments.id, notification.appointmentId))
-      .returning()
-      .get();
+    return {
+      success: true,
+      result: await tx
+        .update(Appointments)
+        .set({
+          status: "booked",
+          clientId,
+        })
+        .where(eq(Appointments.id, notification.appointmentId))
+        .returning()
+        .get(),
+    };
   });
 }
