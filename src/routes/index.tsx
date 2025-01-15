@@ -12,7 +12,7 @@ export default function Home() {
           <div class="max-w-4xl w-full space-y-16 text-center">
             <div>
               <h1 class="text-4xl font-bold text-stroke mb-4">
-                From Empty Slots to Fully Booked — Effortlessly 🥳
+                From Empty Slots to Fully Booked — Effortlessly
               </h1>
               <h2 class="text-2xl font-semibold text-gray-800 mb-4">
                 Struggling with cancellations? Want to increase your earning

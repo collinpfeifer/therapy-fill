@@ -147,7 +147,7 @@ export default function AuthPage() {
                   <CheckboxDescription class="text-sm text-muted-foreground">
                     By providing your contact information, you agree to receive
                     texts and emails from TherapyFill. We will use this to reach
-                    out about available appointments. Reply STOP to unsubscribe.
+                    out about appointment changes. Reply STOP to unsubscribe.
                     Message and data rates may apply.
                   </CheckboxDescription>
                 </div>
