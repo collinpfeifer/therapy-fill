@@ -7,6 +7,7 @@ import {
   bookAppointment,
 } from "./appointment.server";
 import { getClients } from "./client.server";
+import { logAuditEvent } from "./auditLog.server";
 
 // Sign In
 export const signin = action(signIn, "signIn");
@@ -32,3 +33,5 @@ export const getappointmentbynotificationid = query(
 export const getclients = query(getClients, "getClients");
 // Book Appointment
 export const bookappointment = action(bookAppointment, "bookAppointment");
+// Log Audit Event
+export const logauditevent = action(logAuditEvent, "logAuditEvent");

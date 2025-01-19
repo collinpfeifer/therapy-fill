@@ -7,6 +7,8 @@ import { Therapists, CancellationLists } from "../../drizzle/schema";
 import { z } from "zod";
 import bun from "bun";
 import { sendEmail } from "../lib/resend";
+import { posthog } from "posthog-js";
+import { logAuditEvent } from "./auditLog.server";
 
 export async function signIn(formData: FormData) {
   const inputData = Object.fromEntries(formData);
@@ -31,6 +33,17 @@ export async function signIn(formData: FormData) {
   const session = await getSession();
   await session.update((d) => {
     d.userId = user.id;
+  });
+
+  posthog.capture("Therapist signed in", {
+    therapistId: user.id,
+  });
+
+  await logAuditEvent({
+    userId: user.id,
+    action: "SIGN_IN",
+    target: user.id,
+    details: `Therapist signed in`,
   });
 
   return redirect("/dashboard");
@@ -109,6 +122,17 @@ export async function signUp(formData: FormData) {
   //     Date.now() + Math.floor(Math.random() * (300 - 60) + 60) * 1000,
   //   ),
   // });
+
+  posthog.capture("Therapist signed up", {
+    therapistId: newUser.id,
+  });
+
+  await logAuditEvent({
+    userId: newUser.id,
+    action: "SIGN_UP",
+    target: newUser.id,
+    details: `Therapist signed up`,
+  });
 
   return redirect("/dashboard");
 }

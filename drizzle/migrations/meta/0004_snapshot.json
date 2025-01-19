@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d9cffd5e-dd2d-4d63-abc3-342d185d082e",
-  "prevId": "941f0435-3887-46b2-9979-468883ebaeef",
+  "id": "c9212cfa-4b9a-4c61-aed4-2cf6513e8d16",
+  "prevId": "d4a419ee-20cf-418c-9f48-c3acdb628235",
   "tables": {
     "appointments": {
       "name": "appointments",
@@ -46,7 +46,7 @@
           "name": "therapistId",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "therapistName": {
@@ -100,16 +100,16 @@
           "notNull": true,
           "autoincrement": true
         },
-        "event_timestamp": {
-          "name": "event_timestamp",
+        "eventTime": {
+          "name": "eventTime",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
           "default": "(current_timestamp)"
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -136,8 +136,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "source_ip": {
-          "name": "source_ip",
+        "sourceIp": {
+          "name": "sourceIp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -297,7 +304,7 @@
           "name": "clientId",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "phoneNumber": {

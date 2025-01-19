@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import { db } from "../lib/db";
 import { Appointments, Notifications } from "../../drizzle/schema";
 import { z } from "zod";
+import { posthog } from "posthog-js";
+import { logAuditEvent } from "./auditLog.server";
 
 export async function getAppointments() {
   const appointments = await db.select().from(Appointments);
@@ -17,6 +19,18 @@ export async function getAppointmentByNotificationId(id: string) {
       .from(Notifications)
       .where(eq(Notifications.id, id));
 
+    posthog.capture("Notification viewed", {
+      clientId: notification.clientId,
+      appointmentId: notification.appointmentId,
+    });
+
+    await logAuditEvent({
+      userId: notification.clientId,
+      action: "READ",
+      target: notification.id,
+      details: `Notification viewed by client ${notification.clientId}`,
+    });
+
     // Insert the therapist, linking it to the cancellation list
     return await tx
       .select()
@@ -24,6 +38,7 @@ export async function getAppointmentByNotificationId(id: string) {
       .where(eq(Appointments.id, notification.appointmentId))
       .get();
   });
+
   return appointment;
 }
 
@@ -62,6 +77,18 @@ export async function bookAppointment(formData: { notificationId: string }) {
         result: new Error("Appointment already booked"),
       };
     }
+
+    posthog.capture("Appointment booked", {
+      appointmentId: appointment.id,
+      clientId: clientId,
+    });
+
+    await logAuditEvent({
+      userId: clientId,
+      action: "UPDATE",
+      target: appointment.id,
+      details: `Appointment booked by client ${clientId}`,
+    });
 
     return {
       success: true,

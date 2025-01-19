@@ -1,5 +1,5 @@
 import { integer, text, sqliteTable } from "drizzle-orm/sqlite-core";
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 // import { randomUUIDv7 } from "bun"; // doesnt work sad :(
 import { v4 as uuidv4 } from "uuid";
 
@@ -15,7 +15,7 @@ export const Therapists = sqliteTable("therapists", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  textConsent: integer({ mode: "boolean" }).default(false),
+  textConsent: integer({ mode: "boolean" }).default(false).notNull(),
 });
 
 export type CancellationList = InferSelectModel<typeof CancellationLists>;
@@ -32,14 +32,14 @@ export const Clients = sqliteTable("clients", {
   id: text("id")
     .$defaultFn(() => uuidv4())
     .primaryKey(),
-  cancellationListId: text("cancellationListId").references(
-    () => CancellationLists.id,
-  ),
+  cancellationListId: text("cancellationListId")
+    .references(() => CancellationLists.id)
+    .notNull(),
   therapistId: text("therapistId").references(() => Therapists.id),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phoneNumber: text("phoneNumber").notNull().unique(),
-  textConsent: integer({ mode: "boolean" }).default(false),
+  textConsent: integer({ mode: "boolean" }).default(false).notNull(),
 });
 
 export type Appointment = InferSelectModel<typeof Appointments>;
@@ -53,7 +53,9 @@ export const Appointments = sqliteTable("appointments", {
   dateTime: text("dateTime").notNull(),
   from: text("from").notNull(),
   status: text("status").notNull(),
-  therapistId: text("therapistId").references(() => Therapists.id),
+  therapistId: text("therapistId")
+    .references(() => Therapists.id)
+    .notNull(),
   therapistName: text("therapistName").notNull(),
 });
 
@@ -65,10 +67,29 @@ export const Notifications = sqliteTable("notifications", {
   appointmentId: text("appointmentId")
     .references(() => Appointments.id)
     .notNull(),
-  clientId: text("clientId").references(() => Clients.id),
+  clientId: text("clientId")
+    .references(() => Clients.id)
+    .notNull(),
   phoneNumber: text("phoneNumber").notNull(),
   status: text("status").notNull(),
   bookingLink: text("bookingLink").notNull(),
+});
+
+export type AuditLog = InferSelectModel<typeof AuditLogs>;
+export type AuditLogAction = "READ" | "CREATE" | "UPDATE" | "DELETE";
+
+export const AuditLogs = sqliteTable("auditLogs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  eventTime: text("eventTime")
+    .notNull()
+    .default(sql`(current_timestamp)`),
+  userId: text("userId").notNull(),
+  action: text("action").notNull(),
+  target: text("target").notNull(),
+  details: text("details").notNull(),
+  sourceIp: text("sourceIp").notNull(),
+  url: text("url").notNull(),
+  hash: text("hash").notNull(),
 });
 
 export const therapistsRelations = relations(Therapists, ({ one, many }) => ({

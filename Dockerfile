@@ -26,7 +26,7 @@ ENV NODE_ENV="production"
 # ENV SERVER_PRESET="bun"
 
 #RUN bun test
-RUN bun --bun run build
+RUN bunx --bun run build
 
 # copy production dependencies and source code into final image
 FROM base AS release

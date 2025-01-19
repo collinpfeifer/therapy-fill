@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d9cffd5e-dd2d-4d63-abc3-342d185d082e",
-  "prevId": "941f0435-3887-46b2-9979-468883ebaeef",
+  "id": "4eba6212-1524-4ad7-9c6e-80d33020e2c4",
+  "prevId": "d9cffd5e-dd2d-4d63-abc3-342d185d082e",
   "tables": {
     "appointments": {
       "name": "appointments",
@@ -138,6 +138,13 @@
         },
         "source_ip": {
           "name": "source_ip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "url": {
+          "name": "url",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
