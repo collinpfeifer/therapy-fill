@@ -1,0 +1,13 @@
+{
+    email cpfeifer@madcactus.org  # Email for Let's Encrypt notifications
+}
+
+# Custom domain for the SolidStart web app
+therapyfill.com {
+    reverse_proxy therapyfill:3000
+}
+
+# Custom domain for PostHog
+analytics.therapyfill.com {
+    reverse_proxy posthog:8000
+}
