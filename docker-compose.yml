@@ -10,7 +10,7 @@ services:
         source: ${PWD}/db.sqlite
         target: /data/db.sqlite
     environment:
-      - COMPATABILITY_DATE=${COMPATABILITY_DATE}
+      - COMPATIBILITY_DATE=${COMPATIBILITY_DATE}
       - DATABASE_URL=${DATABASE_URL}
       - DATABASE_ENCRYPTION_KEY=${DATABASE_ENCRYPTION_KEY}
       - SESSION_SECRET=${SESSION_SECRET}
