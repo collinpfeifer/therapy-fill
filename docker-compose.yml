@@ -72,8 +72,8 @@ services:
       - posthog
     restart: always
 
-  volumes:
-    postgres_data:
-    clickhouse_data:
-    caddy_data:
-    caddy_config:
+volumes:
+  postgres_data:
+  clickhouse_data:
+  caddy_data:
+  caddy_config:
