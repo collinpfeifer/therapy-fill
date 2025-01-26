@@ -2,12 +2,11 @@ import { For } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 import { createAsync } from "@solidjs/router";
 import { getclients, getappointments } from "~/api";
-import dayjs from "dayjs";
-
 //Components
 import { Calendar } from "~/components/ui/calendar";
 import CancellationPhoneNumber from "~/components/dashboard/CancellationPhoneNumber";
 import { formatAppointmentTime } from "~/lib/date";
+import { getUser } from "~/api/therapist.server";
 const CancellationListLink = clientOnly(
   () => import("~/components/dashboard/CancellationListLink"),
 );
@@ -22,6 +21,7 @@ export const route = {
 export default function DashboardPage() {
   const clients = createAsync(() => getclients());
   const appointments = createAsync(() => getappointments());
+  const therapist = createAsync(() => getUser());
 
   return (
     <div class="min-h-screen bg-gradient-to-r from-yellow-100 via-green-100 to-pink-100 p-8">
@@ -50,7 +50,7 @@ export default function DashboardPage() {
           </ul>
         </div>
 
-        <div class="g-white p-6 rounded-lg shadow-md md:col-span-2">
+        {/* <div class="g-white p-6 rounded-lg shadow-md md:col-span-2">
           <h2 class="text-2xl font-semibold mb-4 text-gray-700">
             Cancellation List Clients
           </h2>
@@ -65,9 +65,9 @@ export default function DashboardPage() {
               </div>
             )}
           </For>
-        </div>
+        </div> */}
       </div>
-      <CancellationListLink />
+      <CancellationListLink id={therapist()!.cancellationListId} />
       <CancellationPhoneNumber />
     </div>
   );

@@ -8,6 +8,6 @@ therapyfill.com {
 }
 
 # Custom domain for PostHog
-analytics.therapyfill.com {
-    reverse_proxy posthog:8000
-}
+#analytics.therapyfill.com {
+#    reverse_proxy posthog:8000
+#}

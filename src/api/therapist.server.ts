@@ -3,7 +3,7 @@ import { redirect } from "@solidjs/router";
 import { eq } from "drizzle-orm";
 import { getSession } from "../lib/session";
 import { db } from "../lib/db";
-import { Therapists, CancellationLists } from "../../drizzle/schema";
+import { Therapists, CancellationLists, Admins } from "../../drizzle/schema";
 import { z } from "zod";
 import bun from "bun";
 import { sendEmail } from "../lib/resend";
@@ -25,8 +25,6 @@ export async function signIn(formData: FormData) {
     .where(eq(Therapists.email, email))
     .get();
 
-  console.log(user);
-
   if (!user || !(await bun.password.verify(password, user.password)))
     throw new Error("Invalid sign-in");
 
@@ -35,9 +33,12 @@ export async function signIn(formData: FormData) {
     d.userId = user.id;
   });
 
-  posthog.capture("Therapist signed in", {
-    therapistId: user.id,
-  });
+  posthog.capture(
+    "Therapist signed in",
+    //   {
+    //   therapistId: user.id,
+    // }
+  );
 
   await logAuditEvent({
     userId: user.id,
@@ -63,7 +64,7 @@ export async function signUp(formData: FormData) {
 
   const { name, email, password, textConsent } = signUpInput.parse(inputData);
 
-  console.log("Parsed data", { name, email, password, textConsent });
+  // console.log("Parsed data", { name, email, password, textConsent });
 
   const existingUser = await db
     .select()
@@ -102,30 +103,33 @@ export async function signUp(formData: FormData) {
     d.userId = newUser.id;
   });
 
-  // await sendEmail({
-  //   to: email,
-  //   subject: "Welcome to Therapy Fill! 🥳 🎉",
-  //   name: "Collin @ TherapyFill :)",
-  //   from: "cpfeifer@madcactus.org",
-  //   message: `Hi! Welcome to TherapyFill!
+  await sendEmail({
+    to: email,
+    subject: "Welcome to Therapy Fill! 🥳 🎉",
+    name: "Collin @ TherapyFill :)",
+    from: "cpfeifer@madcactus.org",
+    message: `Hi! Welcome to TherapyFill!
 
-  //   I'm Collin, founder of TherapyFill and I'm so glad you're here!
-  //   To get started, you should be able to access your dashboard and see your cancellation link and phone number.
-  //   I reccomend sending the cancellation link and phone number to your clients so they can join your cancellation list and know where to reach out moving forward.
-  //   From there, whenever someone cancels we will let you know and reach out to the list to fill that spot! Easy peasy!
+    I'm Collin, founder of TherapyFill and I'm so glad you're here!
+    To get started, you should be able to access your dashboard and see your cancellation link and phone number.
+    I reccomend sending the cancellation link and phone number to your clients so they can join your cancellation list and know where to reach out moving forward.
+    From there, whenever someone cancels we will let you know and reach out to the list to fill that spot! Easy peasy!
 
-  //  If you have any questions, please feel free to reply to this email (Yes this is my real email!)
+   If you have any questions, please feel free to reply to this email (Yes this is my real email!)
 
-  //  Happy therapy!
-  //  - Collin`,
-  //   scheduledAt: new Date(
-  //     Date.now() + Math.floor(Math.random() * (300 - 60) + 60) * 1000,
-  //   ),
-  // });
-
-  posthog.capture("Therapist signed up", {
-    therapistId: newUser.id,
+   Happy therapy!
+   - Collin`,
+    scheduledAt: new Date(
+      Date.now() + Math.floor(Math.random() * (300 - 60) + 60) * 1000,
+    ),
   });
+
+  posthog.capture(
+    "Therapist signed up",
+    //   {
+    //   therapistId: newUser.id,
+    // }
+  );
 
   await logAuditEvent({
     userId: newUser.id,
@@ -139,7 +143,15 @@ export async function signUp(formData: FormData) {
 
 export async function logout() {
   const session = await getSession();
+
+  await logAuditEvent({
+    userId: session.data.userId,
+    action: "SIGN_OUT",
+    target: session.data.userId,
+    details: `Therapist signed out`,
+  });
   await session.update((d) => (d.userId = undefined));
+
   throw redirect("/auth");
 }
 
@@ -155,8 +167,24 @@ export async function getUser() {
       .where(eq(Therapists.id, userId))
       .get();
     if (!user) throw redirect("/auth");
-    return { id: user.id, email: user.email };
+    return user;
   } catch {
     throw logout();
   }
+}
+
+export async function getTherapists() {
+  const session = await getSession();
+  if (!session.data.userId) {
+    return redirect("/auth");
+  }
+  const admin = await db
+    .select()
+    .from(Admins)
+    .where(eq(Admins.id, session.data.userId))
+    .get();
+  if (!admin) {
+    return redirect("/auth");
+  }
+  return await db.select().from(Therapists);
 }

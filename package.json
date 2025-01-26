@@ -7,6 +7,7 @@
     "start": "bunx --bun vinxi start",
     "db:generate": "bunx --bun drizzle-kit generate",
     "db:migrate": "bun --bun ./src/lib/migrations.ts",
+    "db:seed": "bun --bun ./src/lib/seed.ts",
     "db:studio": "bunx --bun drizzle-kit studio"
   },
   "devDependencies": {

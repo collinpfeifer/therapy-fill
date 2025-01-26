@@ -1,0 +1,38 @@
+services:
+  therapyfill:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ${PWD}/db.sqlite
+        target: /data/db.sqlite
+    environment:
+      - COMPATIBILITY_DATE=${COMPATIBILITY_DATE}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_ENCRYPTION_KEY=${DATABASE_ENCRYPTION_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - VITE_TWILIO_PHONE_NUMBER=${VITE_TWILIO_PHONE_NUMBER}
+      - VITE_GOOGLE_VOICE_PHONE_NUMBER=${VITE_GOOGLE_VOICE_PHONE_NUMBER}
+      - LOG_HASH_KEY=${LOG_HASH_KEY}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - therapyfill
+    restart: always

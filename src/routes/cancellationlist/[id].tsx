@@ -29,7 +29,7 @@ export default function WaitlistForm() {
     name: "",
     email: "",
     phoneNumber: "",
-    textConsent: "off",
+    textConsent: false,
     id: params.id,
   });
 
@@ -79,7 +79,7 @@ export default function WaitlistForm() {
       email: "",
       phoneNumber: "",
       id: "",
-      textConsent: "off",
+      textConsent: false,
     });
   };
 
@@ -126,8 +126,8 @@ export default function WaitlistForm() {
             id="textConsent"
             name="textConsent"
             class="flex items-start space-x-2"
-            value={formData.textConsent}
-            onInput={handleChange}
+            checked={formData.textConsent}
+            onChange={(checked) => setFormData({ textConsent: checked })}
           >
             <CheckboxControl />
             <div class="grid gap-1.5 leading-none">

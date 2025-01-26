@@ -14,7 +14,15 @@ export async function logAuditEvent(data: {
 }) {
   const logSchema = z.object({
     userId: z.string(),
-    action: z.enum(["READ", "CREATE", "UPDATE", "DELETE"]),
+    action: z.enum([
+      "READ",
+      "CREATE",
+      "UPDATE",
+      "DELETE",
+      "SIGN_IN",
+      "SIGN_UP",
+      "SIGN_OUT",
+    ]),
     target: z.string(),
     details: z.string(),
   });
@@ -46,7 +54,7 @@ export async function logAuditEvent(data: {
     .returning()
     .get();
 
-  posthog.capture("Audit log", auditLog);
+  posthog.capture("Audit log", { hash });
 
   return auditLog;
 }

@@ -1,7 +1,7 @@
 import { useSession } from "vinxi/http";
 
-export function getSession() {
-  return useSession({
+export async function getSession() {
+  return await useSession({
     password: process.env.SESSION_SECRET!,
   });
 }

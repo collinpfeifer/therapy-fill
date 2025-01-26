@@ -1,11 +1,11 @@
 import { Phone } from "lucide-solid";
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { Button } from "~/components/ui/button";
 import { formatPhoneNumber } from "~/lib/phoneNumber";
 
 const CancellationPhoneNumber = () => {
-  const [phoneNumber, setPhoneNumber] = createSignal(
-    formatPhoneNumber(process.env.GOOGLE_VOICE_TWILIO_PHONE_NUMBER!),
+  const [phoneNumber, _] = createSignal(
+    formatPhoneNumber(import.meta.env.VITE_GOOGLE_VOICE_PHONE_NUMBER!),
   );
   return (
     <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2 mt-6">

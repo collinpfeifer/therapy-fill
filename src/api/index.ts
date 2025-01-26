@@ -1,13 +1,23 @@
 import { action, query } from "@solidjs/router";
-import { signIn, signUp, getUser, logout as l } from "./therapist.server";
+import {
+  signIn,
+  signUp,
+  getUser,
+  logout as l,
+  getTherapists,
+} from "./therapist.server";
 import { addClientToCancellationList } from "./cancellationList.server";
 import {
   getAppointments,
   getAppointmentByNotificationId,
   bookAppointment,
+  getAppointmentsByTherapistId,
+  addAppointment,
+  adminBookAppointment,
 } from "./appointment.server";
-import { getClients } from "./client.server";
+import { getClients, getClientsByTherapistId } from "./client.server";
 import { logAuditEvent } from "./auditLog.server";
+import { adminSignIn } from "./admin.server";
 
 // Sign In
 export const signin = action(signIn, "signIn");
@@ -35,3 +45,24 @@ export const getclients = query(getClients, "getClients");
 export const bookappointment = action(bookAppointment, "bookAppointment");
 // Log Audit Event
 export const logauditevent = action(logAuditEvent, "logAuditEvent");
+// Admin Sign In
+export const adminsignin = action(adminSignIn, "adminSignIn");
+// Get Therapists
+export const gettherapists = query(getTherapists, "getTherapists");
+// Get Clients By Therapist ID
+export const getclientsbytherapistid = query(
+  (id) => getClientsByTherapistId(id),
+  "getClientsByTherapistId",
+);
+// Get Appointments By Therapist ID
+export const getappointmentsbytherapistid = query(
+  (id) => getAppointmentsByTherapistId(id),
+  "getAppointmentsByTherapistId",
+);
+// Add Appointment
+export const addappointment = action(addAppointment, "addAppointment");
+// Admin Book Appointment
+export const adminbookappointment = action(
+  adminBookAppointment,
+  "adminBookAppointment",
+);

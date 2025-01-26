@@ -18,6 +18,16 @@ export const Therapists = sqliteTable("therapists", {
   textConsent: integer({ mode: "boolean" }).default(false).notNull(),
 });
 
+export type Admin = InferSelectModel<typeof Admins>;
+
+export const Admins = sqliteTable("admins", {
+  id: text("id")
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
+});
+
 export type CancellationList = InferSelectModel<typeof CancellationLists>;
 
 export const CancellationLists = sqliteTable("cancellationLists", {
