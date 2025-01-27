@@ -7,6 +7,8 @@ dist
 .vinxi
 app.config.timestamp_*.js
 
+#/drizzle/*.sqlite
+
 # Environment
 .env
 .env*.local

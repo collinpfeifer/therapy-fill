@@ -43,9 +43,9 @@ export async function runMigrations() {
   const glob = new Glob("*.sql");
 
   const migrationsPath = path.resolve("./drizzle/migrations"); // Path to migration files
-
+  const files = (await Array.fromAsync(glob.scan(migrationsPath))).sort();
   try {
-    for await (const file of glob.scan(migrationsPath)) {
+    for (const file of files) {
       const filePath = path.join(migrationsPath, file);
 
       // Read the SQL content of the file
