@@ -12,8 +12,18 @@ export default defineConfig({
       },
     },
     ssr: {
-      external: ["drizzle-orm", "bun:sqlite", "bun"],
+      external: ["drizzle-orm", "bun"],
       noExternal: ["**/*.server.ts"],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          charset: false,
+        },
+      },
+    },
+    build: {
+      minify: false,
     },
   },
 });

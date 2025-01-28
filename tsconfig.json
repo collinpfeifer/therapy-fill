@@ -10,7 +10,7 @@
     "allowJs": true,
     "strict": true,
     "noEmit": true,
-    "types": ["vinxi/types/client", "bun-types", "tailwindcss"],
+    "types": ["vinxi/types/client", "tailwindcss"],
     "isolatedModules": true,
     "baseUrl": "./",
     "paths": {

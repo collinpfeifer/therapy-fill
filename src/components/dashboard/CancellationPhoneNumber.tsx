@@ -1,5 +1,5 @@
 import { Phone } from "lucide-solid";
-import { createSignal, onMount } from "solid-js";
+import { createSignal } from "solid-js";
 import { Button } from "~/components/ui/button";
 import { formatPhoneNumber } from "~/lib/phoneNumber";
 
