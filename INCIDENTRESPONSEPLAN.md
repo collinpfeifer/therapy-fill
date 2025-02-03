@@ -119,9 +119,9 @@ A security incident involves unauthorized access, use, disclosure, alteration, o
 - HIPAA Security Rule (§ 164.308(a)(6)(i))
 - HHS Breach Notification Rule
 
-**Effective Date:** [Insert Date]
-**Reviewed By:** [Insert Reviewer Name]
-**Next Review Date:** [Insert Date]
+**Effective Date:** 1/26/2025
+**Reviewed By:** Collin Pfeifer
+**Next Review Date:** 1/26/2025
 
 ---
 
