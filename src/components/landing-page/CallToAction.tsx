@@ -11,7 +11,9 @@ export default function CallToAction() {
         Join our beta and start filling those empty slots today!
       </p>
       <Button class="text-gray-800">
-        <A href="/auth?tab=sign-up">Sign Up</A>
+        <A href="https://cal.com/cpfeifer/10min" target="_blank">
+          Sign Up
+        </A>
       </Button>
     </div>
   );

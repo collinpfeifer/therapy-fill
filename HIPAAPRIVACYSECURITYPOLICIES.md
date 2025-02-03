@@ -34,6 +34,8 @@ This document outlines the privacy and security policies to ensure compliance wi
 **2.2 Network Security:**
 - HTTPS is implemented to encrypt all data in transit.
 - SSL/TLS certificates are regularly reviewed and renewed to maintain secure communication channels.
+- Firewalls and intrusion detection/prevention systems are in place to protect against unauthorized access.
+- Website is hosted through Tailscale Funnel and HTTPS, which provides secure networking and access control.
 
 **2.3 Authentication and Authorization:**
 - Each user is assigned a unique ID and password.

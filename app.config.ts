@@ -15,15 +15,5 @@ export default defineConfig({
       external: ["drizzle-orm", "bun"],
       noExternal: ["**/*.server.ts"],
     },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          charset: false,
-        },
-      },
-    },
-    build: {
-      minify: false,
-    },
   },
 });

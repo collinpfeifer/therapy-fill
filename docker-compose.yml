@@ -22,21 +22,20 @@ services:
       - LOG_HASH_KEY=${LOG_HASH_KEY}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+#   caddy:
+#     image: caddy:latest
+#     container_name: caddy
+#     ports:
+#       - "8080:80"
+#       - "8443:443"
+#     volumes:
+#       - ./Caddyfile:/etc/caddy/Caddyfile
+#       - caddy_data:/data
+#       - caddy_config:/config
+#     depends_on:
+#       - therapyfill
+#     restart: always
 
-  caddy:
-    image: caddy:latest
-    container_name: caddy
-    ports:
-      - "8080:80"
-      - "8443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - therapyfill
-    restart: always
-
-volumes:
-  caddy_data:
-  caddy_config:
+# volumes:
+#   caddy_data:
+#   caddy_config:

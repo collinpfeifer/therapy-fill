@@ -39,7 +39,7 @@ export default function AuthPage() {
         <Tabs value={activeTab()} onChange={setActiveTab} class="w-full">
           <TabsList class="grid w-full grid-cols-2">
             <TabsTrigger value="sign-in">Login</TabsTrigger>
-            <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
+            {/* <TabsTrigger value="sign-up">Sign Up</TabsTrigger> */}
           </TabsList>
           <TabsContent value="sign-in">
             <form
@@ -83,7 +83,7 @@ export default function AuthPage() {
               </Button>
             </form>
           </TabsContent>
-          <TabsContent value="sign-up">
+          {/* <TabsContent value="sign-up">
             <form
               action={signup}
               method="post"
@@ -159,7 +159,7 @@ export default function AuthPage() {
                 Sign Up
               </Button>
             </form>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
     </div>

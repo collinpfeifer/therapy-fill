@@ -16,7 +16,9 @@ export default function Header() {
             <A href="/auth">Log In</A>
           </Button>
           <Button class="bg-gradient-to-r from-yellow-200 via-green-200 to-pink-200 text-gray-800 hover:from-yellow-300 hover:via-green-300 hover:to-pink-300">
-            <A href="/auth?tab=sign-up">Sign Up</A>
+            <A href="https://cal.com/cpfeifer/10min" target="_blank">
+              Sign Up
+            </A>
           </Button>
         </div>
       </div>
