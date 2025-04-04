@@ -1,0 +1,56 @@
+{
+  "name": "therapy-fill",
+  "type": "module",
+  "scripts": {
+    "dev": "bunx --bun vinxi dev",
+    "build": "bunx --bun vinxi build",
+    "start": "bunx --bun vinxi start",
+    "db:generate": "bunx --bun drizzle-kit generate",
+    "db:migrate": "bun --bun ./src/lib/migration.ts",
+    "db:seed": "bun --bun ./src/lib/seed.ts",
+    "db:studio": "bunx --bun drizzle-kit studio"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.1",
+    "drizzle-kit": "^0.30.3"
+  },
+  "dependencies": {
+    "@ark-ui/solid": "^4.10.1",
+    "@kobalte/core": "^0.13.7",
+    "@libsql/client": "^0.14.0",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "1.0.10",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "drizzle-orm": "^0.38.4",
+    "lucide-solid": "^0.469.0",
+    "nanoid": "^5.0.9",
+    "ollama": "^0.5.12",
+    "playwright": "^1.51.1",
+    "postcss": "^8.5.1",
+    "posthog-js": "^1.211.0",
+    "resend": "^4.1.1",
+    "solid-js": "1.9.3",
+    "solid-styled-jsx": "^0.27.1",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
+    "twilio": "^5.4.3",
+    "uuid": "^11.0.5",
+    "vinxi": "^0.4.3",
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.24.1"
+  },
+  "overrides": {
+    "vite": "5.4.10"
+  },
+  "engines": {
+    "bun": ">=1.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
