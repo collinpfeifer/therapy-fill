@@ -1,14 +1,15 @@
 services:
   therapyfill:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: app/.
+      dockerfile: app/Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - type: bind
-        source: ${PWD}/db.sqlite
+        source: ${PWD}/app/drizzle/db.sqlite
         target: /data/db.sqlite
+    env_file: ./app/.env
     environment:
       - COMPATIBILITY_DATE=${COMPATIBILITY_DATE}
       - DATABASE_URL=${DATABASE_URL}
@@ -22,6 +23,7 @@ services:
       - LOG_HASH_KEY=${LOG_HASH_KEY}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+
 #   caddy:
 #     image: caddy:latest
 #     container_name: caddy
@@ -35,7 +37,84 @@ services:
 #     depends_on:
 #       - therapyfill
 #     restart: always
+#
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
 
-# volumes:
-#   caddy_data:
-#   caddy_config:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "4000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+  hatchet:
+    build: ./hatchet
+    ports:
+      - "7077":"7077"
+
+  google-voice:
+    build: ./google-voice
+    ports:
+      - "3000:3000"
+    env_file: ./google-voice/.env
+    volumes:
+      - google-voice-session:/app/session
+    depends_on:
+      - hatchet
+      - agent
+
+  agent:
+    build: ./agent
+    ports:
+      - "4000:4000"
+    depends_on:
+      - hatchet
+      - ollama
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+          memory: "2GB"
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    restart: unless-stopped
+
+  monitor:
+    build: ./monitor
+    environment:
+      DOCKER_API_URL: "http://docker:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - hatchet
+      - agent
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  google-voice-session:
+    driver: local
+  caddy_data:
+  caddy_config:
+  ollama:

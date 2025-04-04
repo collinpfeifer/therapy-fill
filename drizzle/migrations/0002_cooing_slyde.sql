@@ -1,1 +1,0 @@
-ALTER TABLE `auditLogs` ADD `url` text NOT NULL;
