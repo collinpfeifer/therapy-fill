@@ -1,15 +1,14 @@
 services:
   therapyfill:
     build:
-      context: app/.
-      dockerfile: app/Dockerfile
+      context: app
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - type: bind
         source: ${PWD}/app/drizzle/db.sqlite
         target: /data/db.sqlite
-    env_file: ./app/.env
     environment:
       - COMPATIBILITY_DATE=${COMPATIBILITY_DATE}
       - DATABASE_URL=${DATABASE_URL}
@@ -24,20 +23,20 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
 
-#   caddy:
-#     image: caddy:latest
-#     container_name: caddy
-#     ports:
-#       - "8080:80"
-#       - "8443:443"
-#     volumes:
-#       - ./Caddyfile:/etc/caddy/Caddyfile
-#       - caddy_data:/data
-#       - caddy_config:/config
-#     depends_on:
-#       - therapyfill
-#     restart: always
-#
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - therapyfill
+    restart: always
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -60,10 +59,10 @@ services:
     depends_on:
       - prometheus
 
-  hatchet:
-    build: ./hatchet
-    ports:
-      - "7077":"7077"
+  # hatchet:
+  #   build: ./hatchet
+  #   ports:
+  #     - "7077:7077"
 
   google-voice:
     build: ./google-voice
@@ -73,7 +72,7 @@ services:
     volumes:
       - google-voice-session:/app/session
     depends_on:
-      - hatchet
+      # - hatchet
       - agent
 
   agent:
@@ -81,7 +80,7 @@ services:
     ports:
       - "4000:4000"
     depends_on:
-      - hatchet
+      # - hatchet
       - ollama
     deploy:
       replicas: 2
@@ -98,14 +97,14 @@ services:
       - ollama:/root/.ollama
     restart: unless-stopped
 
-  monitor:
-    build: ./monitor
+  monitoring:
+    build: ./monitoring
     environment:
       DOCKER_API_URL: "http://docker:2375"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - hatchet
+      # - hatchet
       - agent
 
 networks:

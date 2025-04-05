@@ -1,4 +1,4 @@
-import { chromium, Page } from 'playwright';
+import { webkit, Page } from 'playwright';
 import { serve } from 'bun';
 
 
@@ -9,12 +9,12 @@ let page: Page;
 
 // Launch Google Voice Automation
 const startGoogleVoice = async () => {
-    const browser = await chromium.launch({ headless: false });
-    const context = await browser.newContext({ storageState: 'auth.json' });
+    const browser = await webkit.launch({ headless: false });
+    const context = await browser.newContext({ storageState: {path: 'auth.json'} });
     page = await context.newPage();
 
     console.log('Logging into Google Voice...');
-    await page.goto('https://voice.google.com/');
+    await page.goto('https://voice.google.com/signup');
 
     if (await page.isVisible('input[type="email"]')) {
         await page.fill('input[type="email"]', GOOGLE_EMAIL);

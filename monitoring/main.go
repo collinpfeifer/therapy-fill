@@ -2,31 +2,46 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/docker/go-connections/nat"
 )
+
+ type CPUStats struct {
+	CPUUsage struct {
+		TotalUsage        uint64 `json:"total_usage"`
+		UsageInKernelmode uint64 `json:"usage_in_kernelmode"`
+		UsageInUsermode   uint64 `json:"usage_in_usermode"`
+	} `json:"cpu_usage"`
+	SystemCPUUsage uint64 `json:"system_cpu_usage"`
+}
+
+type MemoryStats struct {
+	Usage    uint64 `json:"usage"`
+	MaxUsage uint64 `json:"max_usage"`
+	Limit    uint64 `json:"limit"`
+}
+
+type ContainerStatsDecoded struct {
+	CPUStats    CPUStats    `json:"cpu_stats"`
+	MemoryStats MemoryStats `json:"memory_stats"`
+}
 
 var containers = []string{"ollama", "ollama-agent", "app-container"}
 var scaleThreshold = 50 // Queue size threshold for scaling
 
 // Initialize the Docker client
 func initDockerClient() (*client.Client, error) {
-	cli, err := client.NewClientWithOpts(client.WithAPIVersionNegotiation())
-	if err != nil {
-		return nil, err
-	}
-	return cli, nil
+	return client.NewClientWithOpts(client.WithAPIVersionNegotiation())
 }
 
 // Get container stats (CPU and memory usage)
-func getContainerStats(cli *client.Client, containerName string) (*types.StatsJSON, error) {
+func getContainerStats(cli *client.Client, containerName string) (*ContainerStatsDecoded, error) {
 	ctx := context.Background()
 	stats, err := cli.ContainerStats(ctx, containerName, false)
 	if err != nil {
@@ -34,18 +49,27 @@ func getContainerStats(cli *client.Client, containerName string) (*types.StatsJS
 	}
 	defer stats.Body.Close()
 
-	var stat types.StatsJSON
-	err = json.NewDecoder(stats.Body).Decode(&stat)
-	if err != nil {
+	var stat ContainerStatsDecoded
+	if err := json.NewDecoder(stats.Body).Decode(&stat); err != nil {
 		return nil, err
 	}
-
 	return &stat, nil
+}
+
+// Calculate CPU percentage
+func calculateCPUPercent(stat *types.StatsJSON) float64 {
+	cpuDelta := float64(stat.CPUStats.CPUUsage.TotalUsage - stat.PreCPUStats.CPUUsage.TotalUsage)
+	systemDelta := float64(stat.CPUStats.SystemUsage - stat.PreCPUStats.SystemUsage)
+	cpuCount := float64(len(stat.CPUStats.CPUUsage.PercpuUsage))
+
+	if systemDelta > 0.0 && cpuDelta > 0.0 {
+		return (cpuDelta / systemDelta) * cpuCount * 100.0
+	}
+	return 0.0
 }
 
 // Check system metrics (CPU, memory, and queue size)
 func checkSystemMetrics(cli *client.Client) error {
-	// Get container stats
 	for _, containerName := range containers {
 		stats, err := getContainerStats(cli, containerName)
 		if err != nil {
@@ -53,76 +77,50 @@ func checkSystemMetrics(cli *client.Client) error {
 			continue
 		}
 
-		// Log CPU and memory usage
-		cpuUsage := stats.CPUStats.CPUUsage.TotalUsage
-		memUsage := stats.MemoryStats.Usage
-		fmt.Printf("Container: %s - CPU Usage: %d, Memory Usage: %d\n", containerName, cpuUsage, memUsage)
+		cpuPercent := calculateCPUPercent(stats)
+
+		memUsage := float64(stats.MemoryStats.Usage) / (1024 * 1024) // MB
+		memLimit := float64(stats.MemoryStats.Limit) / (1024 * 1024) // MB
+		memPercent := (memUsage / memLimit) * 100.0
+
+		fmt.Printf("[Metrics] Container: %s | CPU: %.2f%% | Memory: %.2fMB / %.2fMB (%.2f%%)\n",
+			containerName, cpuPercent, memUsage, memLimit, memPercent)
+
+		// Example logic: scale down if memory > 80% or CPU > 50%
+		if cpuPercent > 50.0 || memPercent > 80.0 {
+			log.Printf("Scaling down due to high usage in %s\n", containerName)
+			_ = scaleService(cli, -1)
+		}
 	}
 
-	// Placeholder for queue length (You should replace this with actual queue size logic)
-	queueLength := 100 // Example: You can integrate your queue logic here
-	return adjustScalingBasedOnQueue(cli, queueLength)
-}
-
-// Adjust scaling based on queue size and resource utilization
-func adjustScalingBasedOnQueue(cli *client.Client, queueLength int) error {
+	// Example: scale up if queue is too long (replace with real logic)
+	queueLength := 100
 	if queueLength > scaleThreshold {
-		// Scale up (add more replicas)
-		err := scaleService(cli, 2) // Scale up by 2 replicas (or adjust as needed)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Fetch stats for each container and check resource usage
-	for _, containerName := range containers {
-		stats, err := getContainerStats(cli, containerName)
-		if err != nil {
-			log.Printf("Error fetching stats for container %s: %s", containerName, err)
-			continue
-		}
-
-		// If CPU exceeds 50% or memory exceeds 80%, scale down
-		if stats.CPUStats.CPUUsage.TotalUsage > 50 || stats.MemoryStats.Usage > 80 {
-			log.Printf("Scaling down due to high resource usage in %s", containerName)
-			err := scaleService(cli, -1) // Scale down by 1 replica
-			if err != nil {
-				return err
-			}
-		}
+		log.Printf("Scaling up due to queue length: %d\n", queueLength)
+		_ = scaleService(cli, 2)
 	}
 
 	return nil
 }
 
-// Scale the service (increase or decrease replicas)
+// Scale the service (placeholder)
 func scaleService(cli *client.Client, scale int) error {
-	// Replace with your API call or scaling logic (e.g., using a Docker Compose service scaling)
-	fmt.Printf("Scaling service by %d\n", scale)
-
-	// You can use the Docker API to update service replicas if using Swarm, or just restart containers directly
-	// Example for Docker Swarm (if used)
-	// serviceUpdateConfig := types.ServiceUpdateOptions{ /* Your options here */ }
-	// cli.ServiceUpdate(...)
+	fmt.Printf("Scaling by %d containers (stub function)\n", scale)
+	// Add real scaling logic here (Docker Compose, Swarm, etc.)
 	return nil
 }
 
 func main() {
-	// Initialize Docker client
 	cli, err := initDockerClient()
 	if err != nil {
-		log.Fatalf("Failed to initialize Docker client: %s", err)
+		log.Fatalf("Docker client init failed: %v", err)
 		os.Exit(1)
 	}
 
-	// Monitor system metrics
 	for {
-		err := checkSystemMetrics(cli)
-		if err != nil {
-			log.Printf("Error monitoring system metrics: %s", err)
+		if err := checkSystemMetrics(cli); err != nil {
+			log.Printf("Error: %v", err)
 		}
-
-		// Wait for 10 seconds before checking again
 		time.Sleep(10 * time.Second)
 	}
 }

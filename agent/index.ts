@@ -1,6 +1,6 @@
 import { serve } from "bun";
-import { ChatOpenAI } from "langchain/chat_models";
-import { Tool } from "langchain/tools";
+import { ChatOllama } from "@langchain/ollama";
+import { Tool } from "@langchain/core/tools";
 
 const GOOGLE_VOICE_API = process.env.GOOGLE_VOICE_API!;
 const OLLAMA_URL = "http://localhost:11434/api/generate";
@@ -30,7 +30,7 @@ class SendMessageTool extends Tool {
 }
 
 // LangChain LLaMA Model
-const model = new ChatOpenAI({
+const model = new ChatOllama({
   basePath: "http://localhost:11434",
   model: "llama3.2",
   tools: [new SendMessageTool()],
@@ -66,4 +66,4 @@ serve({
   },
 });
 
-console.log("LangChain agent running on http://localhost:4000");
+console.log("SMS Agent running on http://localhost:4000");

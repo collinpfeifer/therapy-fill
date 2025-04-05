@@ -1,5 +1,5 @@
 # Use an official Go runtime as a parent image
-FROM golang:1.19-alpine
+FROM golang:1.23.1-alpine
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 RUN go mod tidy
 
 # Build the Go app
-RUN go build -o monitor .
+RUN go build -o main .
 
 # Run the Go app
-CMD ["./monitor"]
+CMD ["./main"]
