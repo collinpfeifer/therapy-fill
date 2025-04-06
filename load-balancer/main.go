@@ -7,30 +7,13 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
+  
+  "github.com/docker/docker/api/types/container"
+  dockerClient "github.com/docker/docker/client"
+	
+  hatchetClient "github.com/hatchet-dev/hatchet/pkg/client"
 )
 
- type CPUStats struct {
-	CPUUsage struct {
-		TotalUsage        uint64 `json:"total_usage"`
-		UsageInKernelmode uint64 `json:"usage_in_kernelmode"`
-		UsageInUsermode   uint64 `json:"usage_in_usermode"`
-	} `json:"cpu_usage"`
-	SystemCPUUsage uint64 `json:"system_cpu_usage"`
-}
-
-type MemoryStats struct {
-	Usage    uint64 `json:"usage"`
-	MaxUsage uint64 `json:"max_usage"`
-	Limit    uint64 `json:"limit"`
-}
-
-type ContainerStatsDecoded struct {
-	CPUStats    CPUStats    `json:"cpu_stats"`
-	MemoryStats MemoryStats `json:"memory_stats"`
-}
 
 var containers = []string{"ollama", "ollama-agent", "app-container"}
 var scaleThreshold = 50 // Queue size threshold for scaling
@@ -41,7 +24,7 @@ func initDockerClient() (*client.Client, error) {
 }
 
 // Get container stats (CPU and memory usage)
-func getContainerStats(cli *client.Client, containerName string) (*ContainerStatsDecoded, error) {
+func getContainerStats(cli *client.Client, containerName string) (*container.StatsResponse, error) {
 	ctx := context.Background()
 	stats, err := cli.ContainerStats(ctx, containerName, false)
 	if err != nil {
@@ -49,7 +32,7 @@ func getContainerStats(cli *client.Client, containerName string) (*ContainerStat
 	}
 	defer stats.Body.Close()
 
-	var stat ContainerStatsDecoded
+	var stat container.StatsResponse
 	if err := json.NewDecoder(stats.Body).Decode(&stat); err != nil {
 		return nil, err
 	}
@@ -57,7 +40,7 @@ func getContainerStats(cli *client.Client, containerName string) (*ContainerStat
 }
 
 // Calculate CPU percentage
-func calculateCPUPercent(stat *types.StatsJSON) float64 {
+func calculateCPUPercent(stat *container.StatsResponse) float64 {
 	cpuDelta := float64(stat.CPUStats.CPUUsage.TotalUsage - stat.PreCPUStats.CPUUsage.TotalUsage)
 	systemDelta := float64(stat.CPUStats.SystemUsage - stat.PreCPUStats.SystemUsage)
 	cpuCount := float64(len(stat.CPUStats.CPUUsage.PercpuUsage))
