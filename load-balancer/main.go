@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,8 +15,8 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/swarm"
 	dockerClient "github.com/docker/docker/client"
-
 	hatchetClient "github.com/hatchet-dev/hatchet/pkg/client"
+	"github.com/hatchet-dev/hatchet/pkg/client/rest"
 )
 
 var containers = []string{"ollama", "ollama-agent", "app-container"}
@@ -183,7 +185,26 @@ func waitForServiceScale(cli *dockerClient.Client, serviceID string, expectedRep
 }
 
 func getTaskQueue(hatchetCli hatchetClient.Client) (int, error) {
-	return 0, nil
+	// Get the current task queue to determine if it's useful to scale services
+	ctx := context.Background()
+	var tasks []rest.V1DagListTasksResponse
+	// Get the length of tasks that need to be completed
+	res, err := hatchetCli.API().V1DagListTasks(ctx, &rest.V1DagListTasksParams{})
+	if err != nil {
+		return 0, err
+	}
+	// Close after we are done with the response
+	defer res.Body.Close()
+	if res.StatusCode == http.StatusOK {
+		bodyBytes, err := io.ReadAll(res.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+		fmt.Println(bodyString)
+	}
+
+	return len(tasks), nil
 }
 
 func main() {

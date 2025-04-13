@@ -4,14 +4,15 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build ./index.ts --outdir=dist --target=bun --external playwright --external playwright-core --external chromium-bidi --external electron",
+    "start": "bun dist/index.js",
+    "build": "bun build ./index.ts --outdir=dist --target=bun --external chromium-bidi --external electron --minify",
     "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "playwright": "^1.51.1"
