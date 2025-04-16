@@ -1,75 +1,129 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1-slim AS base
-WORKDIR /usr/src/app
+# Stage 1: Builder stage for installing dependencies and binaries
+FROM oven/bun:debian AS builder
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json bun.lock /temp/dev/
-RUN cd /temp/dev && bun install --frozen-lockfile
-
-# install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-COPY package.json bun.lock /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
-RUN bunx playwright install webkit
-RUN bunx playwright install-deps
-
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
-COPY . . 
-
-# Install Playwright dependencies
+# Install necessary dependencies
 RUN apt-get update && apt-get install -y \
-    libwoff1 \
-    libopus0 \
-    libwebp7 \
-    libwebpdemux2 \
-    libenchant-2-2 \
-    libgudev-1.0-0 \
-    libsecret-1-0 \
-    libhyphen0 \
-    libgdk-pixbuf2.0-0 \
-    libegl1 \
-    libnotify4 \
-    libxslt1.1 \
-    libevent-2.1-7 \
-    libgles2 \
-    libvpx7 \
-    libxcomposite1 \
+    wget \
+    curl \
+    git \
+    unzip \
+    gnupg \
+    libgbm-dev \
+    libglib2.0-0 \
+    libnss3 \
     libatk1.0-0 \
     libatk-bridge2.0-0 \
-    libepoxy0 \
-    libgtk-3-0 \
-    libharfbuzz-icu0 \
-    libxcb-xkb1 \
-    xvfb \
-    libnss3 \
     libcups2 \
-    fonts-liberation \
-    libxss1 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
     libxrandr2 \
-    libxtst6 \
     libpango-1.0-0 \
+    libcairo2 \
     libasound2 \
-    && rm -rf /var/lib/apt/lists/*
+    libatspi2.0-0 \
+    xvfb \
+    xauth \
+    libevent-2.1 \
+    ca-certificates \
+    # libopus \
+    # libepoxy \
+    # libjpeg \
+    # libwebpmux \
+    # libwebp \
+    # libgtk-3 \
+    # libgdk-3 \
+    # libpangocairo-1 \
+    # libcairo-gobject \
+    # libgdk_pixbuf-2 \
+    # libxslt \
+    # liblcms2 \
+    # libwoff2dec \
+    # libflite \
+    # libflite_usenglish \
+    # libflite_cmu_grapheme_lang \
+    # libflite_cmu_grapheme_lex \
+    # libflite_cmu_indic_lang \
+    # libflite_cmu_indic_lex \
+    # libflite_cmulex \
+    # libflite_cmu_time_awb \
+    # libflite_cmu_us_awb \
+    # libflite_cmu_us_kal16 \
+    --no-install-recommends
 
-# [optional] tests & build
-ENV NODE_ENV=production
-# RUN bun test
+# Set up working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json bun.lock ./
+RUN bun install
+
+# Install Playwright with WebKit
+RUN bunx playwright install webkit
+RUN bunx playwright install-deps webkit
+
+RUN ls /root/.cache/ms-playwright
+RUN ls /root/.cache/ms-playwright/webkit*
+
+# Copy application code
+COPY . .
+
+# Build application
 RUN bun run build
 
-# copy production dependencies and source code into final image
-FROM base AS release
-# COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/dist/index.js .
-# COPY --from=prerelease /usr/src/app/package.json .
+# Stage 2: Distroless Wolfi image for runtime
+# FROM cgr.dev/chainguard/wolfi-base:latest
+# FROM debian:latest
 
-# run the app
-USER bun
-EXPOSE 3000/tcp
-ENTRYPOINT [ "bun", "run", "index.ts" ]
+# Create necessary directories
+# WORKDIR /app
+
+# Install minimal dependencies required for Playwright and WebKit
+# Corrected package names for Wolfi repository
+# RUN apk add --no-cache \
+#     ca-certificates \
+#     dbus \
+#     fontconfig \
+#     freetype \
+#     glib \
+#     libgcc \
+#     libstdc++ \
+#     nss
+# RUN apt-get update && apt-get install -y \
+#     ca-certificates \
+#     dbus \
+#     fontconfig \
+#     xvfb
+# Copy Bun runtime from builder
+
+# COPY --from=builder /usr/local/bin/bun /usr/local/bin/
+# COPY --from=builder /usr/local/bin/bunx /usr/local/bin/
+
+# Copy Playwright and browser binaries
+# COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
+# COPY --from=builder /root/.playwright /root/.playwright
+
+# Copy application
+# COPY --from=builder /app /app
+
+# Set environment variables
+ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
+ENV DISPLAY=:99
+
+# Set up Xvfb for non-headless mode
+RUN echo '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"' > /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
+
+RUN ls -a
+
+# RUN ls /root/.cache/ms-playwright/webkit-2140/pw_run.sh
+
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
+
+# Default command to run your application
+CMD ["/usr/local/bin/bun", "run", "start"]
+
+# Expose any ports your application uses
+EXPOSE 3000
