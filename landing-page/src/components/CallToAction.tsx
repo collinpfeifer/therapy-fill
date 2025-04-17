@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import { A } from "@solidjs/router";
 
 export default function CallToAction() {
   return (
@@ -10,9 +11,9 @@ export default function CallToAction() {
         Join our beta and start filling those empty slots today!
       </p>
       <Button class="text-gray-800">
-        <a href="https://cal.com/cpfeifer/10min" target="_blank">
+        <A href="https://cal.com/cpfeifer/10min" target="_blank">
           Sign Up
-        </a>
+        </A>
       </Button>
     </div>
   );

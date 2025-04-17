@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import { A } from "@solidjs/router";
 
 export default function Header() {
   return (
@@ -12,12 +13,12 @@ export default function Header() {
             variant="outline"
             class="bg-gradient-to-r from-yellow-200 via-green-200 to-pink-200 text-gray-800 hover:from-yellow-300 hover:via-green-300 hover:to-pink-300"
           >
-            <a href="/auth">Log In</a>
+            <A href="/secure-endpoint?redirect=/auth">Log In</A>
           </Button>
           <Button class="bg-gradient-to-r from-yellow-200 via-green-200 to-pink-200 text-gray-800 hover:from-yellow-300 hover:via-green-300 hover:to-pink-300">
-            <a href="https://cal.com/cpfeifer/10min" target="_blank">
+            <A href="https://cal.com/cpfeifer/10min" target="_blank">
               Sign Up
-            </a>
+            </A>
           </Button>
         </div>
       </div>
