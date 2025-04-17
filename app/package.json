@@ -11,7 +11,7 @@
     "db:studio": "bunx --bun drizzle-kit studio"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.9",
+    "@types/bun": "^1.2.10",
     "drizzle-kit": "^0.30.6"
   },
   "dependencies": {
@@ -28,12 +28,12 @@
     "drizzle-orm": "^0.38.4",
     "lucide-solid": "^0.469.0",
     "nanoid": "^5.1.5",
-    "ollama": "^0.5.14",
+    "ollama": "^0.5.15",
     "playwright": "^1.51.1",
     "postcss": "^8.5.3",
     "posthog-js": "^1.236.1",
     "resend": "^4.3.0",
-    "solid-js": "1.9.3",
+    "solid-js": "1.9.5",
     "solid-styled-jsx": "^0.27.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.17",
@@ -41,7 +41,7 @@
     "twilio": "^5.5.2",
     "uuid": "^11.1.0",
     "vinxi": "^0.4.3",
-    "zod": "^3.24.2",
+    "zod": "^3.24.3",
     "zod-to-json-schema": "^3.24.5"
   },
   "overrides": {
