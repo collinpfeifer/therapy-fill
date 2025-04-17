@@ -23,7 +23,7 @@ const CalendarAnimation = () => {
           4:00 PM - Mike Johnson
         </div>
       </div>
-      {/* <style jsx>{`
+      <style jsx>{`
         @keyframes fillSlot {
           0%,
           40% {
@@ -60,7 +60,7 @@ const CalendarAnimation = () => {
           right: 8px;
           z-index: 10;
         }
-      `}</style> */}
+      `}</style>
     </div>
   );
 };
